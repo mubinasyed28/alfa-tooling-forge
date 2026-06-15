@@ -9,38 +9,312 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as QuoteRouteImport } from './routes/quote'
+import { Route as IndustriesRouteImport } from './routes/industries'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BrandsRouteImport } from './routes/brands'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResourcesIndexRouteImport } from './routes/resources.index'
+import { Route as CatalogIndexRouteImport } from './routes/catalog.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ResourcesSlugRouteImport } from './routes/resources.$slug'
+import { Route as CatalogCategoryRouteImport } from './routes/catalog.$category'
+import { Route as AdminRfqsRouteImport } from './routes/admin.rfqs'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as CatalogCategoryProductRouteImport } from './routes/catalog.$category.$product'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuoteRoute = QuoteRouteImport.update({
+  id: '/quote',
+  path: '/quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustriesRoute = IndustriesRouteImport.update({
+  id: '/industries',
+  path: '/industries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandsRoute = BrandsRouteImport.update({
+  id: '/brands',
+  path: '/brands',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
+  id: '/resources/',
+  path: '/resources/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogIndexRoute = CatalogIndexRouteImport.update({
+  id: '/catalog/',
+  path: '/catalog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ResourcesSlugRoute = ResourcesSlugRouteImport.update({
+  id: '/resources/$slug',
+  path: '/resources/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogCategoryRoute = CatalogCategoryRouteImport.update({
+  id: '/catalog/$category',
+  path: '/catalog/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRfqsRoute = AdminRfqsRouteImport.update({
+  id: '/rfqs',
+  path: '/rfqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const CatalogCategoryProductRoute = CatalogCategoryProductRouteImport.update({
+  id: '/$product',
+  path: '/$product',
+  getParentRoute: () => CatalogCategoryRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/brands': typeof BrandsRoute
+  '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/quote': typeof QuoteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/rfqs': typeof AdminRfqsRoute
+  '/catalog/$category': typeof CatalogCategoryRouteWithChildren
+  '/resources/$slug': typeof ResourcesSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/catalog/': typeof CatalogIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
+  '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/brands': typeof BrandsRoute
+  '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/quote': typeof QuoteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/rfqs': typeof AdminRfqsRoute
+  '/catalog/$category': typeof CatalogCategoryRouteWithChildren
+  '/resources/$slug': typeof ResourcesSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/catalog': typeof CatalogIndexRoute
+  '/resources': typeof ResourcesIndexRoute
+  '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/brands': typeof BrandsRoute
+  '/contact': typeof ContactRoute
+  '/industries': typeof IndustriesRoute
+  '/quote': typeof QuoteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/rfqs': typeof AdminRfqsRoute
+  '/catalog/$category': typeof CatalogCategoryRouteWithChildren
+  '/resources/$slug': typeof ResourcesSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/catalog/': typeof CatalogIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
+  '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/auth'
+    | '/brands'
+    | '/contact'
+    | '/industries'
+    | '/quote'
+    | '/sitemap.xml'
+    | '/admin/leads'
+    | '/admin/products'
+    | '/admin/rfqs'
+    | '/catalog/$category'
+    | '/resources/$slug'
+    | '/admin/'
+    | '/catalog/'
+    | '/resources/'
+    | '/catalog/$category/$product'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/brands'
+    | '/contact'
+    | '/industries'
+    | '/quote'
+    | '/sitemap.xml'
+    | '/admin/leads'
+    | '/admin/products'
+    | '/admin/rfqs'
+    | '/catalog/$category'
+    | '/resources/$slug'
+    | '/admin'
+    | '/catalog'
+    | '/resources'
+    | '/catalog/$category/$product'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/auth'
+    | '/brands'
+    | '/contact'
+    | '/industries'
+    | '/quote'
+    | '/sitemap.xml'
+    | '/admin/leads'
+    | '/admin/products'
+    | '/admin/rfqs'
+    | '/catalog/$category'
+    | '/resources/$slug'
+    | '/admin/'
+    | '/catalog/'
+    | '/resources/'
+    | '/catalog/$category/$product'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  BrandsRoute: typeof BrandsRoute
+  ContactRoute: typeof ContactRoute
+  IndustriesRoute: typeof IndustriesRoute
+  QuoteRoute: typeof QuoteRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  CatalogCategoryRoute: typeof CatalogCategoryRouteWithChildren
+  ResourcesSlugRoute: typeof ResourcesSlugRoute
+  CatalogIndexRoute: typeof CatalogIndexRoute
+  ResourcesIndexRoute: typeof ResourcesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quote': {
+      id: '/quote'
+      path: '/quote'
+      fullPath: '/quote'
+      preLoaderRoute: typeof QuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industries': {
+      id: '/industries'
+      path: '/industries'
+      fullPath: '/industries'
+      preLoaderRoute: typeof IndustriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brands': {
+      id: '/brands'
+      path: '/brands'
+      fullPath: '/brands'
+      preLoaderRoute: typeof BrandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +322,114 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resources/': {
+      id: '/resources/'
+      path: '/resources'
+      fullPath: '/resources/'
+      preLoaderRoute: typeof ResourcesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalog/': {
+      id: '/catalog/'
+      path: '/catalog'
+      fullPath: '/catalog/'
+      preLoaderRoute: typeof CatalogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/resources/$slug': {
+      id: '/resources/$slug'
+      path: '/resources/$slug'
+      fullPath: '/resources/$slug'
+      preLoaderRoute: typeof ResourcesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalog/$category': {
+      id: '/catalog/$category'
+      path: '/catalog/$category'
+      fullPath: '/catalog/$category'
+      preLoaderRoute: typeof CatalogCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/rfqs': {
+      id: '/admin/rfqs'
+      path: '/rfqs'
+      fullPath: '/admin/rfqs'
+      preLoaderRoute: typeof AdminRfqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/catalog/$category/$product': {
+      id: '/catalog/$category/$product'
+      path: '/$product'
+      fullPath: '/catalog/$category/$product'
+      preLoaderRoute: typeof CatalogCategoryProductRouteImport
+      parentRoute: typeof CatalogCategoryRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminProductsRoute: typeof AdminProductsRoute
+  AdminRfqsRoute: typeof AdminRfqsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminProductsRoute: AdminProductsRoute,
+  AdminRfqsRoute: AdminRfqsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface CatalogCategoryRouteChildren {
+  CatalogCategoryProductRoute: typeof CatalogCategoryProductRoute
+}
+
+const CatalogCategoryRouteChildren: CatalogCategoryRouteChildren = {
+  CatalogCategoryProductRoute: CatalogCategoryProductRoute,
+}
+
+const CatalogCategoryRouteWithChildren = CatalogCategoryRoute._addFileChildren(
+  CatalogCategoryRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
+  BrandsRoute: BrandsRoute,
+  ContactRoute: ContactRoute,
+  IndustriesRoute: IndustriesRoute,
+  QuoteRoute: QuoteRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  CatalogCategoryRoute: CatalogCategoryRouteWithChildren,
+  ResourcesSlugRoute: ResourcesSlugRoute,
+  CatalogIndexRoute: CatalogIndexRoute,
+  ResourcesIndexRoute: ResourcesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
