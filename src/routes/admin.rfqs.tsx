@@ -1,23 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getAdminRfqs, setRfqStatus } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/rfqs")({ component: RfqInbox });
 
 function RfqInbox() {
   const qc = useQueryClient();
+  const fetchRfqs = useServerFn(getAdminRfqs);
+  const updateStatus = useServerFn(setRfqStatus);
+
   const { data } = useQuery({
     queryKey: ["admin-rfqs"],
-    queryFn: async () => {
-      const { data: rfqs } = await supabase.from("rfqs").select("*, rfq_items(*)").order("created_at", { ascending: false }).limit(100);
-      return rfqs ?? [];
-    },
+    queryFn: () => fetchRfqs({ data: undefined } as any),
   });
+
   const setStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("rfqs").update({ status: status as any }).eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: (args: { id: string; status: string }) => updateStatus({ data: args }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-rfqs"] }),
   });
 

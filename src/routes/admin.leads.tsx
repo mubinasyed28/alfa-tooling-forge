@@ -1,16 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getAdminLeads } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/leads")({ component: LeadsInbox });
 
 function LeadsInbox() {
+  const fetchLeads = useServerFn(getAdminLeads);
   const { data } = useQuery({
     queryKey: ["admin-leads"],
-    queryFn: async () => {
-      const { data } = await supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(200);
-      return data ?? [];
-    },
+    queryFn: () => fetchLeads({ data: undefined } as any),
   });
   return (
     <div>

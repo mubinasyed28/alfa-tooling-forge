@@ -23,6 +23,7 @@ import { Route as CatalogIndexRouteImport } from './routes/catalog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ResourcesSlugRouteImport } from './routes/resources.$slug'
 import { Route as CatalogCategoryRouteImport } from './routes/catalog.$category'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminRfqsRouteImport } from './routes/admin.rfqs'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
@@ -98,6 +99,11 @@ const CatalogCategoryRoute = CatalogCategoryRouteImport.update({
   path: '/catalog/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRfqsRoute = AdminRfqsRouteImport.update({
   id: '/rfqs',
   path: '/rfqs',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/products'
     | '/admin/rfqs'
+    | '/admin/users'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin/'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/products'
     | '/admin/rfqs'
+    | '/admin/users'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/products'
     | '/admin/rfqs'
+    | '/admin/users'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin/'
@@ -357,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/rfqs': {
       id: '/admin/rfqs'
       path: '/rfqs'
@@ -392,6 +411,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminRfqsRoute: typeof AdminRfqsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -399,6 +419,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminRfqsRoute: AdminRfqsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -434,3 +455,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

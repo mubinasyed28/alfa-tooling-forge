@@ -1,21 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getAdminOverview } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({ component: Overview });
 
 function Overview() {
+  const fetchOverview = useServerFn(getAdminOverview);
   const { data } = useQuery({
     queryKey: ["admin-overview"],
-    queryFn: async () => {
-      const [p, r, l, posts] = await Promise.all([
-        supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("rfqs").select("id", { count: "exact", head: true }),
-        supabase.from("leads").select("id", { count: "exact", head: true }),
-        supabase.from("posts").select("id", { count: "exact", head: true }),
-      ]);
-      return { products: p.count ?? 0, rfqs: r.count ?? 0, leads: l.count ?? 0, posts: posts.count ?? 0 };
-    },
+    queryFn: () => fetchOverview({ data: undefined } as any),
   });
   const stats = [
     { label: "Products", value: data?.products ?? "—" },
