@@ -158,7 +158,7 @@ function ProductPage() {
               <ShoppingCart className="h-4 w-4" /> Add to Quote
             </button>
             <a
-              href={`https://wa.me/919811089003?text=${encodeURIComponent(`Hello Alfa Tooling Team, I am interested in ${product.name}. Please provide pricing and availability.`)}`}
+              href={`https://wa.me/${process.env.ALFA_WHATSAPP ?? "919311788034"}?text=${encodeURIComponent(`Hello Hass Global Team, I am interested in ${product.name}. Please provide pricing and availability.`)}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded border-2 border-navy bg-background px-5 py-3 text-sm font-semibold text-navy hover:bg-navy hover:text-navy-foreground transition-colors"

@@ -99,3 +99,10 @@ export const getPostBySlug = createServerFn({ method: "GET" })
     const post = await col.findOne({ slug: data.slug });
     return toId(post);
   });
+
+export const listAllPublishedProducts = createServerFn({ method: "GET" }).handler(async () => {
+  const { getCollection } = await import("./db.server");
+  const col = await getCollection("products");
+  const data = await col.find({ is_published: true }).sort({ name: 1 }).limit(200).toArray();
+  return data.map(toId);
+});

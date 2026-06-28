@@ -160,7 +160,7 @@ function Home() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link to="/quote" className="inline-flex items-center gap-2 rounded bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground">Request Quote</Link>
-            <a href="tel:+919811089003" className="inline-flex items-center gap-2 rounded border border-navy-foreground/30 px-6 py-3 text-sm font-semibold hover:bg-navy-foreground/10">Call Sales</a>
+            <a href="tel:+919311788034" className="inline-flex items-center gap-2 rounded border border-navy-foreground/30 px-6 py-3 text-sm font-semibold hover:bg-navy-foreground/10">Call Sales</a>
           </div>
         </div>
       </section>

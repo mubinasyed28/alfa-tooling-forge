@@ -9,6 +9,8 @@ import {
   deleteProduct,
   listCategories,
   listBrandsAdmin,
+  createCategory,
+  createBrand,
 } from "@/lib/product-admin.functions";
 import { Plus, Pencil, Trash2, X, Upload, Video, Image as ImageIcon, Package } from "lucide-react";
 import { toast } from "sonner";
@@ -40,6 +42,42 @@ function ProductsAdmin() {
   const doDelete = useServerFn(deleteProduct);
   const doListCats = useServerFn(listCategories);
   const doListBrands = useServerFn(listBrandsAdmin);
+  const doCreateCat = useServerFn(createCategory);
+  const doCreateBrand = useServerFn(createBrand);
+
+  const [isAddingCat, setIsAddingCat] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const [isAddingBrand, setIsAddingBrand] = useState(false);
+  const [newBrandName, setNewBrandName] = useState("");
+
+  const handleAddCategory = async () => {
+    if (!newCatName.trim()) return;
+    try {
+      const res = await doCreateCat({ data: { name: newCatName.trim() } });
+      toast.success(`Category "${res.name}" created!`);
+      setForm((f) => ({ ...f, category_id: res.id }));
+      setIsAddingCat(false);
+      setNewCatName("");
+      qc.invalidateQueries({ queryKey: ["admin-categories"] });
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to create category");
+    }
+  };
+
+  const handleAddBrand = async () => {
+    if (!newBrandName.trim()) return;
+    try {
+      const res = await doCreateBrand({ data: { name: newBrandName.trim() } });
+      toast.success(`Brand "${res.name}" created!`);
+      setForm((f) => ({ ...f, brand_id: res.id }));
+      setIsAddingBrand(false);
+      setNewBrandName("");
+      qc.invalidateQueries({ queryKey: ["admin-brands"] });
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to create brand");
+    }
+  };
+
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["admin-products", q],
@@ -279,21 +317,109 @@ function ProductsAdmin() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Category</label>
-                  <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className={inputCls}>
-                    <option value="">— Select category —</option>
-                    {(categories as any[]).map((c: any) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
+                  {!isAddingCat ? (
+                    <div className="space-y-1">
+                      <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className={inputCls}>
+                        <option value="">— Select category —</option>
+                        {(categories as any[]).map((c: any) => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingCat(true)}
+                        className="text-xs text-orange hover:underline font-semibold"
+                      >
+                        + Add new category
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        placeholder="New category name..."
+                        value={newCatName}
+                        onChange={(e) => setNewCatName(e.target.value)}
+                        className={inputCls}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddCategory();
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddCategory}
+                        className="px-3 py-2 text-xs font-semibold bg-orange text-orange-foreground rounded hover:opacity-90"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAddingCat(false);
+                          setNewCatName("");
+                        }}
+                        className="px-3 py-2 text-xs font-semibold border border-border rounded hover:bg-secondary"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className={labelCls}>Brand</label>
-                  <select value={form.brand_id} onChange={(e) => setForm({ ...form, brand_id: e.target.value })} className={inputCls}>
-                    <option value="">— Select brand —</option>
-                    {(brands as any[]).map((b: any) => (
-                      <option key={b.id} value={b.id}>{b.name}</option>
-                    ))}
-                  </select>
+                  {!isAddingBrand ? (
+                    <div className="space-y-1">
+                      <select value={form.brand_id} onChange={(e) => setForm({ ...form, brand_id: e.target.value })} className={inputCls}>
+                        <option value="">— Select brand —</option>
+                        {(brands as any[]).map((b: any) => (
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingBrand(true)}
+                        className="text-xs text-orange hover:underline font-semibold"
+                      >
+                        + Add new brand
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        placeholder="New brand name..."
+                        value={newBrandName}
+                        onChange={(e) => setNewBrandName(e.target.value)}
+                        className={inputCls}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddBrand();
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddBrand}
+                        className="px-3 py-2 text-xs font-semibold bg-orange text-orange-foreground rounded hover:opacity-90"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAddingBrand(false);
+                          setNewBrandName("");
+                        }}
+                        className="px-3 py-2 text-xs font-semibold border border-border rounded hover:bg-secondary"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -12,6 +12,7 @@ const navItems = [
   { to: "/catalog", label: "Catalog" },
   { to: "/brands", label: "Brands" },
   { to: "/industries", label: "Industries" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -39,11 +40,11 @@ export function Header() {
       <div className="hidden md:block bg-navy text-navy-foreground text-xs">
         <div className="container mx-auto flex h-9 items-center justify-between px-4">
           <div className="flex items-center gap-5">
-            <a href="tel:+919811089003" className="flex items-center gap-1.5 hover:text-orange transition-colors">
-              <Phone className="h-3 w-3" />+91 98110 89003
+            <a href="tel:+919311788034" className="flex items-center gap-1.5 hover:text-orange transition-colors">
+              <Phone className="h-3 w-3" />+91 93117 88034
             </a>
-            <a href="mailto:sales@alfatooling.com" className="flex items-center gap-1.5 hover:text-orange transition-colors">
-              <Mail className="h-3 w-3" />sales@alfatooling.com
+            <a href="mailto:sales@sphinxconsultants.in" className="flex items-center gap-1.5 hover:text-orange transition-colors">
+              <Mail className="h-3 w-3" />sales@sphinxconsultants.in
             </a>
           </div>
           <div className="flex items-center gap-4">
@@ -75,7 +76,7 @@ export function Header() {
           <img
             src="/logo.png"
             alt="Alfa Tooling Systems"
-            className="h-10 w-auto object-contain"
+            className="h-14 w-auto object-contain"
             onError={(e) => {
               // Fallback to letter mark if logo doesn't load
               (e.target as HTMLImageElement).style.display = "none";

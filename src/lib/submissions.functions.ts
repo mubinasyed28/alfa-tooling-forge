@@ -52,14 +52,14 @@ function buildQuoteEmailHtml(data: z.infer<typeof RfqSchema>): string {
       </table>
       ${data.notes ? `<div style="margin-top:20px;padding:14px;background:#f9f9f9;border-radius:6px;font-size:13px;color:#444"><strong>Notes:</strong><br>${data.notes}</div>` : ""}
     </div>
-    <div style="background:#f5f5f5;padding:16px 32px;font-size:12px;color:#999;text-align:center">Alfa Tooling Systems · Pandav Nagar, New Delhi · sales@alfatooling.com</div>
+    <div style="background:#f5f5f5;padding:16px 32px;font-size:12px;color:#999;text-align:center">Hass Global Team · Pandav Nagar, New Delhi · sales@sphinxconsultants.in</div>
   </div>`;
 }
 
 function buildWhatsAppMessage(data: z.infer<typeof RfqSchema>): string {
   const itemLines = data.items.map((i) => `• ${i.product_name} × ${i.quantity}`).join("\n");
   return (
-    `Hello Alfa Tooling Team,\n\n` +
+    `Hello Hass Global Team,\n\n` +
     `I'd like to request a quote for the following:\n\n` +
     itemLines +
     `\n\n` +
@@ -98,8 +98,8 @@ export const submitRfq = createServerFn({ method: "POST" })
         },
       });
       await transporter.sendMail({
-        from: `"Alfa Tooling Website" <${process.env.EMAIL_USER}>`,
-        to: process.env.ALFA_EMAIL ?? "sales@alfatooling.com",
+        from: `"Hass Global Website" <${process.env.EMAIL_USER}>`,
+        to: process.env.ALFA_EMAIL ?? "sales@sphinxconsultants.in",
         replyTo: data.email,
         subject: `New Quote Request from ${data.contact_name}${data.company ? ` (${data.company})` : ""}`,
         html: buildQuoteEmailHtml(data),
@@ -110,8 +110,7 @@ export const submitRfq = createServerFn({ method: "POST" })
       // Don't fail the request if email fails
     }
 
-    // 3. Return WhatsApp URL for frontend to open
-    const waNumber = process.env.ALFA_WHATSAPP ?? "919811089003";
+    const waNumber = process.env.ALFA_WHATSAPP ?? "919311788034";
     const waMsg = buildWhatsAppMessage(data);
     const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMsg)}`;
 

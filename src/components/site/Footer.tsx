@@ -34,7 +34,7 @@ export function Footer() {
           <ul className="space-y-3 text-sm text-navy-foreground/70">
             <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0 text-orange" />Pandav Nagar, New Delhi, India</li>
             <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 shrink-0 text-orange" /><span>011-43052451<br />+91-9811089003</span></li>
-            <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 shrink-0 text-orange" />sales@alfatooling.com</li>
+            <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 shrink-0 text-orange" /><a href="mailto:sales@sphinxconsultants.in" className="hover:underline">sales@sphinxconsultants.in</a></li>
           </ul>
         </div>
       </div>

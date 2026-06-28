@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as QuoteRouteImport } from './routes/quote'
 import { Route as IndustriesRouteImport } from './routes/industries'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BrandsRouteImport } from './routes/brands'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -23,6 +24,7 @@ import { Route as CatalogIndexRouteImport } from './routes/catalog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ResourcesSlugRouteImport } from './routes/resources.$slug'
 import { Route as CatalogCategoryRouteImport } from './routes/catalog.$category'
+import { Route as ApiUploadRouteImport } from './routes/api.upload'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminRfqsRouteImport } from './routes/admin.rfqs'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
@@ -42,6 +44,11 @@ const QuoteRoute = QuoteRouteImport.update({
 const IndustriesRoute = IndustriesRouteImport.update({
   id: '/industries',
   path: '/industries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -99,6 +106,11 @@ const CatalogCategoryRoute = CatalogCategoryRouteImport.update({
   path: '/catalog/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiUploadRoute = ApiUploadRouteImport.update({
+  id: '/api/upload',
+  path: '/api/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -132,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/brands': typeof BrandsRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/industries': typeof IndustriesRoute
   '/quote': typeof QuoteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -139,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/upload': typeof ApiUploadRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -152,6 +166,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/brands': typeof BrandsRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/industries': typeof IndustriesRoute
   '/quote': typeof QuoteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -159,6 +174,7 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/upload': typeof ApiUploadRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -174,6 +190,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/brands': typeof BrandsRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/industries': typeof IndustriesRoute
   '/quote': typeof QuoteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -181,6 +198,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRoute
   '/admin/rfqs': typeof AdminRfqsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/upload': typeof ApiUploadRoute
   '/catalog/$category': typeof CatalogCategoryRouteWithChildren
   '/resources/$slug': typeof ResourcesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -197,6 +215,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/brands'
     | '/contact'
+    | '/gallery'
     | '/industries'
     | '/quote'
     | '/sitemap.xml'
@@ -204,6 +223,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/rfqs'
     | '/admin/users'
+    | '/api/upload'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin/'
@@ -217,6 +237,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/brands'
     | '/contact'
+    | '/gallery'
     | '/industries'
     | '/quote'
     | '/sitemap.xml'
@@ -224,6 +245,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/rfqs'
     | '/admin/users'
+    | '/api/upload'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin'
@@ -238,6 +260,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/brands'
     | '/contact'
+    | '/gallery'
     | '/industries'
     | '/quote'
     | '/sitemap.xml'
@@ -245,6 +268,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/rfqs'
     | '/admin/users'
+    | '/api/upload'
     | '/catalog/$category'
     | '/resources/$slug'
     | '/admin/'
@@ -260,9 +284,11 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BrandsRoute: typeof BrandsRoute
   ContactRoute: typeof ContactRoute
+  GalleryRoute: typeof GalleryRoute
   IndustriesRoute: typeof IndustriesRoute
   QuoteRoute: typeof QuoteRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiUploadRoute: typeof ApiUploadRoute
   CatalogCategoryRoute: typeof CatalogCategoryRouteWithChildren
   ResourcesSlugRoute: typeof ResourcesSlugRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
@@ -290,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/industries'
       fullPath: '/industries'
       preLoaderRoute: typeof IndustriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -369,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/upload': {
+      id: '/api/upload'
+      path: '/api/upload'
+      fullPath: '/api/upload'
+      preLoaderRoute: typeof ApiUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -444,9 +484,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BrandsRoute: BrandsRoute,
   ContactRoute: ContactRoute,
+  GalleryRoute: GalleryRoute,
   IndustriesRoute: IndustriesRoute,
   QuoteRoute: QuoteRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiUploadRoute: ApiUploadRoute,
   CatalogCategoryRoute: CatalogCategoryRouteWithChildren,
   ResourcesSlugRoute: ResourcesSlugRoute,
   CatalogIndexRoute: CatalogIndexRoute,

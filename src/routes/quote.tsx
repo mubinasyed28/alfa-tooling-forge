@@ -53,7 +53,7 @@ function Quote() {
       return doSubmit({ data: { ...form, items: allItems } as any });
     },
     onSuccess: (result: any) => {
-      toast.success("Quote submitted! Email sent to Alfa Tooling.");
+      toast.success("Quote submitted! Email sent to Hass Global.");
       setSuccess({ whatsappUrl: result.whatsappUrl });
       clear();
       setForm({ contact_name: "", company: "", email: "", phone: "", city: "", gst: "", machine_model: "", notes: "" });
@@ -74,8 +74,8 @@ function Quote() {
           </div>
           <h1 className="font-display text-3xl font-bold text-navy">Quote Submitted!</h1>
           <p className="mt-3 text-muted-foreground leading-relaxed">
-            Your quotation has been emailed to the Alfa Tooling team at{" "}
-            <strong>sales@alfatooling.com</strong>. We'll respond within 1 business day.
+            Your quotation has been emailed to the Hass Global Team at{" "}
+            <strong>sales@sphinxconsultants.in</strong>. We'll respond within 1 business day.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <a
@@ -164,7 +164,7 @@ function Quote() {
             <p className="text-sm font-medium text-[#128C7E]">Need a faster response?</p>
             <p className="text-xs text-muted-foreground mt-1 mb-3">You can also send your enquiry directly on WhatsApp.</p>
             <a
-              href={`https://wa.me/${process.env.ALFA_WHATSAPP ?? "919811089003"}?text=${encodeURIComponent("Hello Alfa Tooling Team, I need a quote for some products.")}`}
+              href={`https://wa.me/${process.env.ALFA_WHATSAPP ?? "919311788034"}?text=${encodeURIComponent("Hello Hass Global Team, I need a quote for some products.")}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded bg-[#25D366] px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
@@ -237,7 +237,7 @@ function Quote() {
           </button>
 
           <p className="text-xs text-center text-muted-foreground">
-            📧 Email sent to Alfa Tooling + option to send on WhatsApp
+            📧 Email sent to Hass Global + option to send on WhatsApp
           </p>
         </form>
       </section>

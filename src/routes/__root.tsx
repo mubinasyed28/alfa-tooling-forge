@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "Organization",
           name: "Alfa Tooling Systems",
           url: "/",
-          email: "sales@alfatooling.com",
+          email: "sales@sphinxconsultants.in",
           telephone: "+91-9811089003",
           address: {
             "@type": "PostalAddress",
