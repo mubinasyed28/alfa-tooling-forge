@@ -86,8 +86,9 @@ export async function getDb(): Promise<Db> {
       globalThis.__mongoClient = client;
       globalThis.__mongoDb = client.db(process.env.MONGODB_DB_NAME ?? "alfatooling");
       console.log("MongoDB connected successfully.");
-    } catch (error) {
-      console.error("MongoDB connection failed:", error);
+    } catch (error: any) {
+      console.error("CRITICAL: MongoDB connection failed:", error.message);
+      console.error("Full Error Details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
       console.warn("Using mock database — results will be in-memory only.");
       globalThis.__mongoClient = null;
       const { MOCK_DATA } = await import("./db.mock");
