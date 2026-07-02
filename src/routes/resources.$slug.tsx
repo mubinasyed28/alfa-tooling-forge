@@ -4,7 +4,8 @@ import { SiteLayout } from "@/components/site/Layout";
 import { getPostBySlug } from "@/lib/catalog.functions";
 import ReactMarkdown from "react-markdown";
 
-const q = (slug: string) => queryOptions({ queryKey: ["post", slug], queryFn: () => getPostBySlug({ data: { slug } }) });
+const q = (slug: string) =>
+  queryOptions({ queryKey: ["post", slug], queryFn: () => getPostBySlug({ data: { slug } }) });
 
 export const Route = createFileRoute("/resources/$slug")({
   loader: async ({ context, params }) => {
@@ -33,7 +34,12 @@ function PostPage() {
   return (
     <SiteLayout>
       <article className="container mx-auto px-4 py-12 max-w-3xl">
-        <Link to="/resources" className="text-xs uppercase tracking-wider text-orange font-semibold">← All Resources</Link>
+        <Link
+          to="/resources"
+          className="text-xs uppercase tracking-wider text-orange font-semibold"
+        >
+          ← All Resources
+        </Link>
         <h1 className="mt-3 font-display text-3xl md:text-4xl font-bold text-navy">{post.title}</h1>
         {post.excerpt && <p className="mt-3 text-lg text-muted-foreground">{post.excerpt}</p>}
         <div className="prose prose-sm md:prose-base mt-8 max-w-none">

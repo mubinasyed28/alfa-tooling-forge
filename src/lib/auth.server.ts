@@ -17,9 +17,13 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 }
 
 export function signToken(user: PublicUser): string {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET(), {
-    expiresIn: "7d",
-  });
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role, name: user.name },
+    JWT_SECRET(),
+    {
+      expiresIn: "7d",
+    },
+  );
 }
 
 export function verifyToken(token: string): PublicUser | null {
@@ -32,7 +36,9 @@ export function verifyToken(token: string): PublicUser | null {
 }
 
 // Extract user from a cookie string (server-side only)
-export function getUserFromCookieHeader(cookieHeader: string | undefined | null): PublicUser | null {
+export function getUserFromCookieHeader(
+  cookieHeader: string | undefined | null,
+): PublicUser | null {
   if (!cookieHeader) return null;
   const match = cookieHeader.match(/(?:^|;\s*)alfa_token=([^;]+)/);
   if (!match) return null;

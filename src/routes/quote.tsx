@@ -12,7 +12,11 @@ export const Route = createFileRoute("/quote")({
   head: () => ({
     meta: [
       { title: "Request a Quote | Alfa Tooling Systems" },
-      { name: "description", content: "Submit your CNC spare parts and tooling requirement — our team responds within one business day." },
+      {
+        name: "description",
+        content:
+          "Submit your CNC spare parts and tooling requirement — our team responds within one business day.",
+      },
       { property: "og:title", content: "Request a Quote | Alfa Tooling" },
       { property: "og:url", content: "/quote" },
     ],
@@ -56,13 +60,23 @@ function Quote() {
       toast.success("Quote submitted! Email sent to Hass Global.");
       setSuccess({ whatsappUrl: result.whatsappUrl });
       clear();
-      setForm({ contact_name: "", company: "", email: "", phone: "", city: "", gst: "", machine_model: "", notes: "" });
+      setForm({
+        contact_name: "",
+        company: "",
+        email: "",
+        phone: "",
+        city: "",
+        gst: "",
+        machine_model: "",
+        notes: "",
+      });
       setAdhoc("");
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to submit"),
   });
 
-  const inputCls = "mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
+  const inputCls =
+    "mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
   const labelCls = "text-xs font-semibold uppercase tracking-wider text-muted-foreground";
 
   if (success) {
@@ -102,9 +116,15 @@ function Quote() {
     <SiteLayout>
       <section className="border-b border-border bg-secondary">
         <div className="container mx-auto px-4 py-10">
-          <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">Request for Quote</div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">Your Quote Basket</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Fill your details and we'll email + WhatsApp you a response.</p>
+          <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">
+            Request for Quote
+          </div>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">
+            Your Quote Basket
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Fill your details and we'll email + WhatsApp you a response.
+          </p>
         </div>
       </section>
 
@@ -115,13 +135,18 @@ function Quote() {
           {items.length === 0 && (
             <p className="text-muted-foreground text-sm">
               Your basket is empty.{" "}
-              <Link to="/catalog" className="text-orange underline">Browse the catalog</Link>{" "}
+              <Link to="/catalog" className="text-orange underline">
+                Browse the catalog
+              </Link>{" "}
               and add products, or enter requirements below.
             </p>
           )}
           <ul className="space-y-2">
             {items.map((it) => (
-              <li key={it.product_name} className="border border-border rounded p-3 flex items-center gap-3 bg-card">
+              <li
+                key={it.product_name}
+                className="border border-border rounded p-3 flex items-center gap-3 bg-card"
+              >
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm truncate">{it.product_name}</div>
                 </div>
@@ -132,7 +157,10 @@ function Quote() {
                   onChange={(e) => setQty(it.product_name, parseInt(e.target.value) || 1)}
                   className="w-20 rounded border border-input bg-background px-2 py-1 text-sm text-center"
                 />
-                <button onClick={() => remove(it.product_name)} className="text-muted-foreground hover:text-destructive transition-colors">
+                <button
+                  onClick={() => remove(it.product_name)}
+                  className="text-muted-foreground hover:text-destructive transition-colors"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </li>
@@ -141,7 +169,9 @@ function Quote() {
 
           {/* Ad-hoc item */}
           <div className="mt-6 border border-dashed border-border rounded p-4">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Add an ad-hoc requirement</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              Add an ad-hoc requirement
+            </div>
             <div className="flex gap-2">
               <input
                 placeholder="e.g. Pall HC9601FUS8H filter"
@@ -162,7 +192,9 @@ function Quote() {
           {/* WhatsApp quick enquiry */}
           <div className="mt-6 bg-[#25D366]/5 border border-[#25D366]/30 rounded-lg p-4">
             <p className="text-sm font-medium text-[#128C7E]">Need a faster response?</p>
-            <p className="text-xs text-muted-foreground mt-1 mb-3">You can also send your enquiry directly on WhatsApp.</p>
+            <p className="text-xs text-muted-foreground mt-1 mb-3">
+              You can also send your enquiry directly on WhatsApp.
+            </p>
             <a
               href={`https://wa.me/${process.env.ALFA_WHATSAPP ?? "919311788034"}?text=${encodeURIComponent("Hello Hass Global Team, I need a quote for some products.")}`}
               target="_blank"
@@ -183,49 +215,97 @@ function Quote() {
           className="border border-border rounded-xl p-6 bg-card space-y-4 h-fit shadow-sm"
         >
           <h2 className="font-display text-xl font-bold text-navy">Your Details</h2>
-          <p className="text-xs text-muted-foreground">We'll send a quote confirmation to your email.</p>
+          <p className="text-xs text-muted-foreground">
+            We'll send a quote confirmation to your email.
+          </p>
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
               <label className={labelCls}>Full Name *</label>
-              <input required type="text" value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} className={inputCls} />
+              <input
+                required
+                type="text"
+                value={form.contact_name}
+                onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
+                className={inputCls}
+              />
             </div>
             <div>
               <label className={labelCls}>Company</label>
-              <input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={inputCls} />
+              <input
+                type="text"
+                value={form.company}
+                onChange={(e) => setForm({ ...form, company: e.target.value })}
+                className={inputCls}
+              />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
               <label className={labelCls}>Email *</label>
-              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
+              <input
+                required
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className={inputCls}
+              />
             </div>
             <div>
               <label className={labelCls}>Phone</label>
-              <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} />
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className={inputCls}
+              />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
               <label className={labelCls}>City</label>
-              <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="e.g. New Delhi" className={inputCls} />
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                placeholder="e.g. New Delhi"
+                className={inputCls}
+              />
             </div>
             <div>
               <label className={labelCls}>GST No.</label>
-              <input type="text" value={form.gst} onChange={(e) => setForm({ ...form, gst: e.target.value })} placeholder="e.g. 07AAAAA0000A1Z5" className={inputCls} />
+              <input
+                type="text"
+                value={form.gst}
+                onChange={(e) => setForm({ ...form, gst: e.target.value })}
+                placeholder="e.g. 07AAAAA0000A1Z5"
+                className={inputCls}
+              />
             </div>
           </div>
 
           <div>
             <label className={labelCls}>Machine Model</label>
-            <input type="text" value={form.machine_model} onChange={(e) => setForm({ ...form, machine_model: e.target.value })} placeholder="e.g. Mazak VTC-300C" className={inputCls} />
+            <input
+              type="text"
+              value={form.machine_model}
+              onChange={(e) => setForm({ ...form, machine_model: e.target.value })}
+              placeholder="e.g. Mazak VTC-300C"
+              className={inputCls}
+            />
           </div>
 
           <div>
             <label className={labelCls}>Additional Notes</label>
-            <textarea rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Delivery timeline, specifications, etc." className={inputCls} />
+            <textarea
+              rows={3}
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder="Delivery timeline, specifications, etc."
+              className={inputCls}
+            />
           </div>
 
           <button

@@ -1,8 +1,18 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Phone, Mail, Menu, ShoppingCart, Search, LogIn, LogOut, Settings, UserCheck } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  Menu,
+  ShoppingCart,
+  Search,
+  LogIn,
+  LogOut,
+  Settings,
+  UserCheck,
+} from "lucide-react";
 import { useState } from "react";
 import { useQuoteStore } from "@/lib/quote-store";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import { signOut } from "@/lib/auth.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -40,11 +50,19 @@ export function Header() {
       <div className="hidden md:block bg-navy text-navy-foreground text-xs">
         <div className="container mx-auto flex h-9 items-center justify-between px-4">
           <div className="flex items-center gap-5">
-            <a href="tel:+919311788034" className="flex items-center gap-1.5 hover:text-orange transition-colors">
-              <Phone className="h-3 w-3" />+91 93117 88034
+            <a
+              href="tel:+919311788034"
+              className="flex items-center gap-1.5 hover:text-orange transition-colors"
+            >
+              <Phone className="h-3 w-3" />
+              +91 93117 88034
             </a>
-            <a href="mailto:sales@sphinxconsultants.in" className="flex items-center gap-1.5 hover:text-orange transition-colors">
-              <Mail className="h-3 w-3" />sales@sphinxconsultants.in
+            <a
+              href="mailto:sales@sphinxconsultants.in"
+              className="flex items-center gap-1.5 hover:text-orange transition-colors"
+            >
+              <Mail className="h-3 w-3" />
+              sales@sphinxconsultants.in
             </a>
           </div>
           <div className="flex items-center gap-4">
@@ -57,12 +75,18 @@ export function Header() {
                     {isSuperAdmin ? "Super Admin" : "Editor"}
                   </span>
                 )}
-                <button onClick={handleSignOut} className="flex items-center gap-1 hover:text-orange transition-colors">
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-1 hover:text-orange transition-colors"
+                >
                   <LogOut className="h-3 w-3" /> Sign Out
                 </button>
               </div>
             ) : (
-              <Link to="/auth" className="flex items-center gap-1 hover:text-orange transition-colors">
+              <Link
+                to="/auth"
+                className="flex items-center gap-1 hover:text-orange transition-colors"
+              >
                 <LogIn className="h-3 w-3" /> Staff Login
               </Link>
             )}
@@ -162,16 +186,27 @@ export function Header() {
               </Link>
             ))}
             {(isEditor || isSuperAdmin) && (
-              <Link to="/admin" onClick={() => setOpen(false)} className="py-2.5 text-sm font-medium text-navy border-b border-border">
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="py-2.5 text-sm font-medium text-navy border-b border-border"
+              >
                 Dashboard
               </Link>
             )}
             {user ? (
-              <button onClick={handleSignOut} className="py-2.5 text-sm font-medium text-left text-muted-foreground hover:text-orange">
+              <button
+                onClick={handleSignOut}
+                className="py-2.5 text-sm font-medium text-left text-muted-foreground hover:text-orange"
+              >
                 Sign Out
               </button>
             ) : (
-              <Link to="/auth" onClick={() => setOpen(false)} className="py-2.5 text-sm font-medium">
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="py-2.5 text-sm font-medium"
+              >
                 Staff Login
               </Link>
             )}

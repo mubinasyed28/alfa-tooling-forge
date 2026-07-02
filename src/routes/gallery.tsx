@@ -3,21 +3,35 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, useRef } from "react";
 import { SiteLayout } from "@/components/site/Layout";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import {
   listGalleryItems,
   createGalleryItem,
   updateGalleryItem,
   deleteGalleryItem,
 } from "@/lib/gallery.functions";
-import { Plus, Pencil, Trash2, X, Upload, Video, Image as ImageIcon, ExternalLink, Calendar } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Upload,
+  Video,
+  Image as ImageIcon,
+  ExternalLink,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
       { title: "Event Gallery | Alfa Tooling Systems" },
-      { name: "description", content: "Explore photos and videos of our company events, awards, inaugurations, and exhibitions." },
+      {
+        name: "description",
+        content:
+          "Explore photos and videos of our company events, awards, inaugurations, and exhibitions.",
+      },
       { property: "og:title", content: "Event Gallery | Alfa Tooling" },
       { property: "og:url", content: "/gallery" },
     ],
@@ -59,9 +73,10 @@ function GalleryPage() {
 
   const categories = ["All", ...Array.from(new Set(items.map((i: any) => i.category)))];
 
-  const filteredItems = selectedCategory === "All" 
-    ? items 
-    : items.filter((i: any) => i.category.toLowerCase() === selectedCategory.toLowerCase());
+  const filteredItems =
+    selectedCategory === "All"
+      ? items
+      : items.filter((i: any) => i.category.toLowerCase() === selectedCategory.toLowerCase());
 
   const saveMut = useMutation({
     mutationFn: async () => {
@@ -138,20 +153,29 @@ function GalleryPage() {
     return ext && ["mp4", "webm", "ogg", "mov"].includes(ext);
   };
 
-  const inputCls = "w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
-  const labelCls = "text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block";
+  const inputCls =
+    "w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
+  const labelCls =
+    "text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block";
 
   return (
     <SiteLayout>
       <section className="border-b border-border bg-secondary">
         <div className="container mx-auto px-4 py-10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">Moments &amp; Milestone Gallery</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">
+              Moments &amp; Milestone Gallery
+            </div>
             <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">Event Gallery</h1>
-            <p className="mt-2 text-muted-foreground max-w-2xl">A glimpse into our company milestones, inaugurations, exhibitions, and achievements.</p>
+            <p className="mt-2 text-muted-foreground max-w-2xl">
+              A glimpse into our company milestones, inaugurations, exhibitions, and achievements.
+            </p>
           </div>
           {isEditor && (
-            <button onClick={openCreate} className="flex items-center gap-2 rounded bg-orange px-4 py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90 transition-opacity">
+            <button
+              onClick={openCreate}
+              className="flex items-center gap-2 rounded bg-orange px-4 py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90 transition-opacity"
+            >
               <Plus className="h-4 w-4" /> Add Event
             </button>
           )}
@@ -179,37 +203,60 @@ function GalleryPage() {
 
       {/* Gallery Grid */}
       <section className="container mx-auto px-4 py-12">
-        {isLoading && <div className="text-center text-muted-foreground py-12">Loading gallery...</div>}
-        {!isLoading && filteredItems.length === 0 && (
-          <div className="text-center text-muted-foreground py-12">No events found in this category.</div>
+        {isLoading && (
+          <div className="text-center text-muted-foreground py-12">Loading gallery...</div>
         )}
-        
+        {!isLoading && filteredItems.length === 0 && (
+          <div className="text-center text-muted-foreground py-12">
+            No events found in this category.
+          </div>
+        )}
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredItems.map((item: any) => (
-            <div key={item.id} className="border border-border rounded-xl overflow-hidden bg-card shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+            <div
+              key={item.id}
+              className="border border-border rounded-xl overflow-hidden bg-card shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+            >
               <div>
                 {/* Media Container */}
                 <div className="relative aspect-video bg-secondary overflow-hidden border-b border-border">
                   {item.media_urls?.[0] ? (
                     isVideo(item.media_urls[0]) ? (
-                      <video src={item.media_urls[0]} controls className="w-full h-full object-cover" />
+                      <video
+                        src={item.media_urls[0]}
+                        controls
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      <img src={item.media_urls[0]} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <img
+                        src={item.media_urls[0]}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
                     )
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No media available</div>
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                      No media available
+                    </div>
                   )}
                   <span className="absolute top-3 left-3 bg-navy/80 text-navy-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
                     {item.category}
                   </span>
-                  
+
                   {isEditor && (
                     <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openEdit(item)} className="p-1.5 rounded bg-white/95 text-navy hover:text-orange shadow transition-colors">
+                      <button
+                        onClick={() => openEdit(item)}
+                        className="p-1.5 rounded bg-white/95 text-navy hover:text-orange shadow transition-colors"
+                      >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
-                      <button 
-                        onClick={() => { if (confirm(`Delete "${item.title}"?`)) deleteMut.mutate(item.id); }} 
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete "${item.title}"?`)) deleteMut.mutate(item.id);
+                        }}
                         className="p-1.5 rounded bg-white/95 text-red-500 hover:text-red-700 shadow transition-colors"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -222,20 +269,28 @@ function GalleryPage() {
                   {item.date && (
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
                       <Calendar className="h-3.5 w-3.5 text-orange" />
-                      {new Date(item.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                      {new Date(item.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </div>
                   )}
-                  <h3 className="font-display text-lg font-bold text-navy line-clamp-1">{item.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3 leading-relaxed">{item.description}</p>
+                  <h3 className="font-display text-lg font-bold text-navy line-clamp-1">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
               </div>
 
               {item.external_url && (
                 <div className="p-5 pt-0 border-t border-border/50 mt-4">
-                  <a 
-                    href={item.external_url} 
-                    target="_blank" 
-                    rel="noreferrer" 
+                  <a
+                    href={item.external_url}
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-flex items-center gap-1 text-xs font-semibold text-orange hover:underline pt-3"
                   >
                     Read More <ExternalLink className="h-3 w-3" />
@@ -252,14 +307,33 @@ function GalleryPage() {
         <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center overflow-y-auto p-4">
           <div className="bg-background rounded-xl border border-border w-full max-w-lg my-8 shadow-2xl">
             <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background rounded-t-xl z-10">
-              <h2 className="font-display text-xl font-bold text-navy">{editId ? "Edit Gallery Event" : "Add Gallery Event"}</h2>
-              <button onClick={() => setShowForm(false)} className="grid h-8 w-8 place-items-center rounded hover:bg-secondary"><X className="h-4 w-4" /></button>
+              <h2 className="font-display text-xl font-bold text-navy">
+                {editId ? "Edit Gallery Event" : "Add Gallery Event"}
+              </h2>
+              <button
+                onClick={() => setShowForm(false)}
+                className="grid h-8 w-8 place-items-center rounded hover:bg-secondary"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-            
-            <form onSubmit={(e) => { e.preventDefault(); saveMut.mutate(); }} className="p-6 space-y-4">
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveMut.mutate();
+              }}
+              className="p-6 space-y-4"
+            >
               <div>
                 <label className={labelCls}>Event Title *</label>
-                <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Annual Dealer Meet 2026" className={inputCls} />
+                <input
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  placeholder="e.g. Annual Dealer Meet 2026"
+                  className={inputCls}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -267,17 +341,27 @@ function GalleryPage() {
                   <label className={labelCls}>Category *</label>
                   {!isAddingCat ? (
                     <div className="space-y-1">
-                      <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
+                      <select
+                        value={form.category}
+                        onChange={(e) => setForm({ ...form, category: e.target.value })}
+                        className={inputCls}
+                      >
                         <option value="events">Events</option>
                         <option value="awards">Awards</option>
                         <option value="inauguration">Inauguration</option>
                         <option value="exhibitions">Exhibitions</option>
                         {Array.from(new Set(items.map((i: any) => i.category)))
-                          .filter((c: any) => !["events", "awards", "inauguration", "exhibitions"].includes(c.toLowerCase()))
+                          .filter(
+                            (c: any) =>
+                              !["events", "awards", "inauguration", "exhibitions"].includes(
+                                c.toLowerCase(),
+                              ),
+                          )
                           .map((c: any) => (
-                            <option key={c} value={c}>{c}</option>
-                          ))
-                        }
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
                       </select>
                       <button
                         type="button"
@@ -334,18 +418,34 @@ function GalleryPage() {
                 </div>
                 <div>
                   <label className={labelCls}>Event Date</label>
-                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={inputCls} />
+                  <input
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    className={inputCls}
+                  />
                 </div>
               </div>
 
               <div>
                 <label className={labelCls}>Description</label>
-                <textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Add a short summary of the event..." className={inputCls} />
+                <textarea
+                  rows={3}
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  placeholder="Add a short summary of the event..."
+                  className={inputCls}
+                />
               </div>
 
               <div>
                 <label className={labelCls}>External Link URL</label>
-                <input value={form.external_url} onChange={(e) => setForm({ ...form, external_url: e.target.value })} placeholder="e.g. Press release link, YouTube link, etc." className={inputCls} />
+                <input
+                  value={form.external_url}
+                  onChange={(e) => setForm({ ...form, external_url: e.target.value })}
+                  placeholder="e.g. Press release link, YouTube link, etc."
+                  className={inputCls}
+                />
               </div>
 
               {/* Media Upload */}
@@ -353,15 +453,31 @@ function GalleryPage() {
                 <label className={labelCls}>Media Files (Images/Videos) *</label>
                 <div className="space-y-2">
                   {form.media_urls.map((url, i) => (
-                    <div key={i} className="flex items-center gap-2 border border-border p-1.5 rounded bg-muted/30">
-                      {isVideo(url) ? <Video className="h-4 w-4 text-orange" /> : <ImageIcon className="h-4 w-4 text-navy" />}
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 border border-border p-1.5 rounded bg-muted/30"
+                    >
+                      {isVideo(url) ? (
+                        <Video className="h-4 w-4 text-orange" />
+                      ) : (
+                        <ImageIcon className="h-4 w-4 text-navy" />
+                      )}
                       <span className="text-xs text-muted-foreground flex-1 truncate">{url}</span>
-                      <button type="button" onClick={() => setForm((f) => ({ ...f, media_urls: f.media_urls.filter((_, j) => j !== i) }))} className="text-red-500 hover:text-red-700">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((f) => ({
+                            ...f,
+                            media_urls: f.media_urls.filter((_, j) => j !== i),
+                          }))
+                        }
+                        className="text-red-500 hover:text-red-700"
+                      >
                         <X className="h-4 w-4" />
                       </button>
                     </div>
                   ))}
-                  
+
                   <div className="flex gap-2">
                     <input
                       placeholder="Paste media URL or upload a file..."
@@ -370,22 +486,49 @@ function GalleryPage() {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           const val = (e.target as HTMLInputElement).value.trim();
-                          if (val) { setForm((f) => ({ ...f, media_urls: [...f.media_urls, val] })); (e.target as HTMLInputElement).value = ""; }
+                          if (val) {
+                            setForm((f) => ({ ...f, media_urls: [...f.media_urls, val] }));
+                            (e.target as HTMLInputElement).value = "";
+                          }
                         }
                       }}
                     />
-                    <button type="button" onClick={() => mediaInputRef.current?.click()} disabled={uploading} className="flex items-center gap-1.5 rounded border border-border px-3 py-2 text-xs hover:border-orange hover:text-orange whitespace-nowrap bg-background">
+                    <button
+                      type="button"
+                      onClick={() => mediaInputRef.current?.click()}
+                      disabled={uploading}
+                      className="flex items-center gap-1.5 rounded border border-border px-3 py-2 text-xs hover:border-orange hover:text-orange whitespace-nowrap bg-background"
+                    >
                       <Upload className="h-3.5 w-3.5" /> Upload File
                     </button>
                   </div>
-                  <input ref={mediaInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={(e) => handleMediaUpload(e.target.files)} />
-                  <p className="text-[10px] text-muted-foreground">Press Enter to add pasted URL, or click Upload to select files.</p>
+                  <input
+                    ref={mediaInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleMediaUpload(e.target.files)}
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    Press Enter to add pasted URL, or click Upload to select files.
+                  </p>
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                <button type="button" onClick={() => setShowForm(false)} className="rounded border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary">Cancel</button>
-                <button type="submit" disabled={saveMut.isPending || uploading || form.media_urls.length === 0} className="rounded bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground hover:opacity-90 disabled:opacity-50">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="rounded border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saveMut.isPending || uploading || form.media_urls.length === 0}
+                  className="rounded bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground hover:opacity-90 disabled:opacity-50"
+                >
                   {saveMut.isPending ? "Saving..." : editId ? "Save Changes" : "Create Event"}
                 </button>
               </div>

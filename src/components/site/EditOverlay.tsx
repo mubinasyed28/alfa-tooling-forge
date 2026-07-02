@@ -1,7 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Pencil, X, Check, Loader2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 
 interface EditOverlayProps {
   children: ReactNode;
@@ -11,7 +11,12 @@ interface EditOverlayProps {
 }
 
 /** Wraps any element with an edit button overlay shown only to editors */
-export function EditOverlay({ children, label = "Edit", onEdit, className = "" }: EditOverlayProps) {
+export function EditOverlay({
+  children,
+  label = "Edit",
+  onEdit,
+  className = "",
+}: EditOverlayProps) {
   const { isEditor } = useAuth();
   if (!isEditor) return <>{children}</>;
   return (
@@ -38,7 +43,13 @@ interface InlineTextEditProps {
 }
 
 /** Click-to-edit inline text field (for editors only) */
-export function InlineTextEdit({ value, onSave, multiline = false, className = "", placeholder }: InlineTextEditProps) {
+export function InlineTextEdit({
+  value,
+  onSave,
+  multiline = false,
+  className = "",
+  placeholder,
+}: InlineTextEditProps) {
   const { isEditor } = useAuth();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -52,10 +63,15 @@ export function InlineTextEdit({ value, onSave, multiline = false, className = "
     return (
       <span
         className={`relative group cursor-text border-b-2 border-transparent hover:border-orange/50 transition-colors ${className}`}
-        onClick={() => { setDraft(value); setEditing(true); }}
+        onClick={() => {
+          setDraft(value);
+          setEditing(true);
+        }}
         title="Click to edit"
       >
-        {value || <span className="text-muted-foreground/50 italic">{placeholder ?? "Click to edit"}</span>}
+        {value || (
+          <span className="text-muted-foreground/50 italic">{placeholder ?? "Click to edit"}</span>
+        )}
         <Pencil className="inline h-3 w-3 text-orange/50 ml-1 opacity-0 group-hover:opacity-100" />
       </span>
     );
@@ -63,7 +79,12 @@ export function InlineTextEdit({ value, onSave, multiline = false, className = "
 
   async function handleSave() {
     setSaving(true);
-    try { await onSave(draft); setEditing(false); } finally { setSaving(false); }
+    try {
+      await onSave(draft);
+      setEditing(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -81,14 +102,28 @@ export function InlineTextEdit({ value, onSave, multiline = false, className = "
           autoFocus
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") setEditing(false); }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSave();
+            if (e.key === "Escape") setEditing(false);
+          }}
           className={`rounded border border-orange bg-background px-2 py-1 text-sm focus:outline-none ${className}`}
         />
       )}
-      <button onClick={handleSave} disabled={saving} className="rounded bg-orange p-1 text-white disabled:opacity-50">
-        {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        className="rounded bg-orange p-1 text-white disabled:opacity-50"
+      >
+        {saving ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <Check className="h-3.5 w-3.5" />
+        )}
       </button>
-      <button onClick={() => setEditing(false)} className="rounded border border-border p-1 hover:bg-secondary">
+      <button
+        onClick={() => setEditing(false)}
+        className="rounded border border-border p-1 hover:bg-secondary"
+      >
         <X className="h-3.5 w-3.5" />
       </button>
     </span>

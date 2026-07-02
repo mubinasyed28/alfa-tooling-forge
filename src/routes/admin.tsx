@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Package, Inbox, Mail, FileText, LogOut, Users, ShieldCheck } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import { signOut } from "@/lib/auth.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { seedSuperAdmin } from "@/lib/auth.functions";
@@ -9,10 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [
-      { title: "Admin Dashboard | Alfa Tooling" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Admin Dashboard | Alfa Tooling" }, { name: "robots", content: "noindex" }],
   }),
   component: AdminShell,
 });
@@ -31,7 +28,7 @@ function AdminShell() {
 
   useEffect(() => {
     seedMut.mutate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -39,7 +36,12 @@ function AdminShell() {
     if (!loading && user && !isEditor && !isSuperAdmin) nav({ to: "/auth" });
   }, [loading, user, isEditor, isSuperAdmin, nav]);
 
-  if (loading) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading...</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">
+        Loading...
+      </div>
+    );
   if (!user || (!isEditor && !isSuperAdmin)) return null;
 
   async function handleSignOut() {
@@ -64,7 +66,14 @@ function AdminShell() {
     <div className="min-h-screen grid lg:grid-cols-[240px_1fr] bg-secondary">
       <aside className="bg-navy text-navy-foreground p-4 lg:min-h-screen">
         <Link to="/" className="flex items-center gap-2 mb-1">
-          <img src="/logo.png" alt="Alfa Tooling" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <img
+            src="/logo.png"
+            alt="Alfa Tooling"
+            className="h-8 w-auto object-contain"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
         </Link>
         <div className="flex items-center gap-2 text-xs text-navy-foreground/60 mb-6">
           <ShieldCheck className="h-3 w-3 text-orange" />
@@ -83,7 +92,11 @@ function AdminShell() {
               >
                 <i.icon className="h-4 w-4" />
                 {i.label}
-                {i.adminOnly && <span className="ml-auto text-[10px] bg-orange/20 text-orange px-1.5 py-0.5 rounded font-semibold">Admin</span>}
+                {i.adminOnly && (
+                  <span className="ml-auto text-[10px] bg-orange/20 text-orange px-1.5 py-0.5 rounded font-semibold">
+                    Admin
+                  </span>
+                )}
               </Link>
             );
           })}

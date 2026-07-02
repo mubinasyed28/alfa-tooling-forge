@@ -36,7 +36,9 @@ export const seedSuperAdmin = createServerFn({ method: "POST" }).handler(async (
 // ── Sign Up ───────────────────────────────────────────────────────────────────
 export const signUp = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
-    z.object({ email: z.string().email(), password: z.string().min(6), name: z.string().min(1) }).parse(d)
+    z
+      .object({ email: z.string().email(), password: z.string().min(6), name: z.string().min(1) })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { hashPassword } = await getAuthHelpers();
@@ -57,18 +59,24 @@ export const signUp = createServerFn({ method: "POST" })
 // ── Sign In ───────────────────────────────────────────────────────────────────
 export const signIn = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
-    z.object({ email: z.string().email(), password: z.string().min(1) }).parse(d)
+    z.object({ email: z.string().email(), password: z.string().min(1) }).parse(d),
   )
   .handler(async ({ data }) => {
     const { verifyPassword, signToken, buildSetCookie } = await getAuthHelpers();
     const getCollection = await getDb();
     const users = await getCollection("users");
-    const user = await users.findOne({ email: data.email } as any) as any;
+    const user = (await users.findOne({ email: data.email } as any)) as any;
     if (!user) throw new Error("Invalid email or password");
     const valid = await verifyPassword(data.password, user.password_hash);
     if (!valid) throw new Error("Invalid email or password");
-    if (user.role === "pending") throw new Error("Your account is pending approval by the super admin.");
-    const publicUser = { id: user._id.toString(), email: user.email, role: user.role, name: user.name };
+    if (user.role === "pending")
+      throw new Error("Your account is pending approval by the super admin.");
+    const publicUser = {
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
     const token = signToken(publicUser as any);
     const cookie = buildSetCookie(token);
     const { setResponseHeader } = await import("@tanstack/react-start/server");

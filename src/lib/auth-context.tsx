@@ -38,7 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isEditor = user?.role === "editor" || user?.role === "super_admin";
@@ -51,6 +50,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
-  return useContext(AuthCtx);
-}
+export { AuthCtx };
+export type { AuthContextValue };

@@ -8,9 +8,23 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/admin/users")({ component: UsersAdmin });
 
 function roleBadge(role: string) {
-  if (role === "super_admin") return <span className="text-xs rounded px-2 py-0.5 bg-orange/20 text-orange font-semibold">Super Admin</span>;
-  if (role === "editor") return <span className="text-xs rounded px-2 py-0.5 bg-green-100 text-green-800 font-semibold">Editor</span>;
-  return <span className="text-xs rounded px-2 py-0.5 bg-yellow-100 text-yellow-700 font-semibold">Pending</span>;
+  if (role === "super_admin")
+    return (
+      <span className="text-xs rounded px-2 py-0.5 bg-orange/20 text-orange font-semibold">
+        Super Admin
+      </span>
+    );
+  if (role === "editor")
+    return (
+      <span className="text-xs rounded px-2 py-0.5 bg-green-100 text-green-800 font-semibold">
+        Editor
+      </span>
+    );
+  return (
+    <span className="text-xs rounded px-2 py-0.5 bg-yellow-100 text-yellow-700 font-semibold">
+      Pending
+    </span>
+  );
 }
 
 function UsersAdmin() {
@@ -27,19 +41,28 @@ function UsersAdmin() {
 
   const approveMut = useMutation({
     mutationFn: (id: string) => doApprove({ data: { id } }),
-    onSuccess: () => { toast.success("User approved as Editor"); qc.invalidateQueries({ queryKey: ["admin-users"] }); },
+    onSuccess: () => {
+      toast.success("User approved as Editor");
+      qc.invalidateQueries({ queryKey: ["admin-users"] });
+    },
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
 
   const rejectMut = useMutation({
     mutationFn: (id: string) => doReject({ data: { id } }),
-    onSuccess: () => { toast.success("User removed"); qc.invalidateQueries({ queryKey: ["admin-users"] }); },
+    onSuccess: () => {
+      toast.success("User removed");
+      qc.invalidateQueries({ queryKey: ["admin-users"] });
+    },
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
 
   const revokeMut = useMutation({
     mutationFn: (id: string) => doRevoke({ data: { id } }),
-    onSuccess: () => { toast.success("Access revoked"); qc.invalidateQueries({ queryKey: ["admin-users"] }); },
+    onSuccess: () => {
+      toast.success("Access revoked");
+      qc.invalidateQueries({ queryKey: ["admin-users"] });
+    },
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
 
@@ -76,10 +99,15 @@ function UsersAdmin() {
               </thead>
               <tbody>
                 {pending.map((u: any) => (
-                  <tr key={u.id} className="border-b border-border last:border-0 hover:bg-secondary/50">
+                  <tr
+                    key={u.id}
+                    className="border-b border-border last:border-0 hover:bg-secondary/50"
+                  >
                     <td className="p-3 font-medium">{u.name || "—"}</td>
                     <td className="p-3 text-muted-foreground">{u.email}</td>
-                    <td className="p-3 text-muted-foreground text-xs">{u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}</td>
+                    <td className="p-3 text-muted-foreground text-xs">
+                      {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
+                    </td>
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <button
@@ -90,7 +118,9 @@ function UsersAdmin() {
                           <UserCheck className="h-3.5 w-3.5" /> Approve
                         </button>
                         <button
-                          onClick={() => { if (confirm(`Remove ${u.email}?`)) rejectMut.mutate(u.id); }}
+                          onClick={() => {
+                            if (confirm(`Remove ${u.email}?`)) rejectMut.mutate(u.id);
+                          }}
                           disabled={rejectMut.isPending}
                           className="flex items-center gap-1.5 rounded border border-red-300 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
                         >
@@ -113,7 +143,9 @@ function UsersAdmin() {
           <h2 className="font-semibold text-navy">Active Users ({active.length})</h2>
         </div>
         {isLoading ? (
-          <div className="bg-background border border-border rounded-lg p-8 text-center text-sm text-muted-foreground">Loading...</div>
+          <div className="bg-background border border-border rounded-lg p-8 text-center text-sm text-muted-foreground">
+            Loading...
+          </div>
         ) : (
           <div className="bg-background border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
@@ -128,15 +160,22 @@ function UsersAdmin() {
               </thead>
               <tbody>
                 {active.map((u: any) => (
-                  <tr key={u.id} className="border-b border-border last:border-0 hover:bg-secondary/50">
+                  <tr
+                    key={u.id}
+                    className="border-b border-border last:border-0 hover:bg-secondary/50"
+                  >
                     <td className="p-3 font-medium">{u.name || "—"}</td>
                     <td className="p-3 text-muted-foreground">{u.email}</td>
                     <td className="p-3">{roleBadge(u.role)}</td>
-                    <td className="p-3 text-muted-foreground text-xs">{u.approved_at ? new Date(u.approved_at).toLocaleDateString() : "—"}</td>
+                    <td className="p-3 text-muted-foreground text-xs">
+                      {u.approved_at ? new Date(u.approved_at).toLocaleDateString() : "—"}
+                    </td>
                     <td className="p-3">
                       {u.role !== "super_admin" && (
                         <button
-                          onClick={() => { if (confirm(`Revoke access for ${u.email}?`)) revokeMut.mutate(u.id); }}
+                          onClick={() => {
+                            if (confirm(`Revoke access for ${u.email}?`)) revokeMut.mutate(u.id);
+                          }}
                           disabled={revokeMut.isPending}
                           className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-red-300 hover:text-red-600 disabled:opacity-50"
                         >

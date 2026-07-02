@@ -16,7 +16,7 @@ const RfqSchema = z.object({
         product_id: z.string().optional().nullable(),
         product_name: z.string().trim().min(1).max(300),
         quantity: z.number().int().min(1).max(99999),
-      })
+      }),
     )
     .min(1)
     .max(50),
@@ -26,7 +26,7 @@ function buildQuoteEmailHtml(data: z.infer<typeof RfqSchema>): string {
   const rows = data.items
     .map(
       (i) =>
-        `<tr><td style="padding:6px 12px;border-bottom:1px solid #eee">${i.product_name}</td><td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:center">${i.quantity}</td></tr>`
+        `<tr><td style="padding:6px 12px;border-bottom:1px solid #eee">${i.product_name}</td><td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:center">${i.quantity}</td></tr>`,
     )
     .join("");
   return `

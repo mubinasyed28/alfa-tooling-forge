@@ -3,16 +3,31 @@ import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-
 import { SiteLayout } from "@/components/site/Layout";
 import { getProductBySlug } from "@/lib/catalog.functions";
 import { updateProduct } from "@/lib/product-admin.functions";
-import { ChevronRight, Download, MessageCircle, ShoppingCart, CheckCircle2, X, Pencil, Save, Upload, Plus, Trash2 } from "lucide-react";
+import {
+  ChevronRight,
+  Download,
+  MessageCircle,
+  ShoppingCart,
+  CheckCircle2,
+  X,
+  Pencil,
+  Save,
+  Upload,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useQuoteStore } from "@/lib/quote-store";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import { EditModeBar } from "@/components/site/EditOverlay";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
 
 const q = (slug: string) =>
-  queryOptions({ queryKey: ["product", slug], queryFn: () => getProductBySlug({ data: { slug } }) });
+  queryOptions({
+    queryKey: ["product", slug],
+    queryFn: () => getProductBySlug({ data: { slug } }),
+  });
 
 export const Route = createFileRoute("/catalog/$category/$product")({
   loader: async ({ context, params }) => {
@@ -22,8 +37,15 @@ export const Route = createFileRoute("/catalog/$category/$product")({
   },
   head: ({ loaderData, params }) => ({
     meta: [
-      { title: `${loaderData?.product.name ?? "Product"} — ${loaderData?.brand?.name ?? "Alfa Tooling"} | CNC Spare Parts` },
-      { name: "description", content: loaderData?.product.short_description ?? "Industrial spare part from Alfa Tooling Systems." },
+      {
+        title: `${loaderData?.product.name ?? "Product"} — ${loaderData?.brand?.name ?? "Alfa Tooling"} | CNC Spare Parts`,
+      },
+      {
+        name: "description",
+        content:
+          loaderData?.product.short_description ??
+          "Industrial spare part from Alfa Tooling Systems.",
+      },
       { property: "og:title", content: `${loaderData?.product.name} | Alfa Tooling` },
       { property: "og:description", content: loaderData?.product.short_description ?? "" },
       { property: "og:type", content: "product" },
@@ -43,7 +65,9 @@ export const Route = createFileRoute("/catalog/$category/$product")({
               name: loaderData.product.name,
               sku: loaderData.product.sku,
               description: loaderData.product.short_description,
-              brand: loaderData.brand ? { "@type": "Brand", name: loaderData.brand.name } : undefined,
+              brand: loaderData.brand
+                ? { "@type": "Brand", name: loaderData.brand.name }
+                : undefined,
               image: loaderData.product.image_urls,
             }),
           },
@@ -86,10 +110,35 @@ function ProductPage() {
       <section className="border-b border-border bg-secondary">
         <div className="container mx-auto px-4 py-5">
           <nav className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
-            <Link to="/" className="hover:text-orange">Home</Link><ChevronRight className="h-3 w-3" />
-            <Link to="/catalog" className="hover:text-orange">Catalog</Link><ChevronRight className="h-3 w-3" />
-            {parentCategory && <><Link to="/catalog/$category" params={{ category: parentCategory.slug }} className="hover:text-orange">{parentCategory.name}</Link><ChevronRight className="h-3 w-3" /></>}
-            {category && <Link to="/catalog/$category" params={{ category: category.slug }} className="hover:text-orange">{category.name}</Link>}
+            <Link to="/" className="hover:text-orange">
+              Home
+            </Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link to="/catalog" className="hover:text-orange">
+              Catalog
+            </Link>
+            <ChevronRight className="h-3 w-3" />
+            {parentCategory && (
+              <>
+                <Link
+                  to="/catalog/$category"
+                  params={{ category: parentCategory.slug }}
+                  className="hover:text-orange"
+                >
+                  {parentCategory.name}
+                </Link>
+                <ChevronRight className="h-3 w-3" />
+              </>
+            )}
+            {category && (
+              <Link
+                to="/catalog/$category"
+                params={{ category: category.slug }}
+                className="hover:text-orange"
+              >
+                {category.name}
+              </Link>
+            )}
           </nav>
         </div>
       </section>
@@ -100,7 +149,11 @@ function ProductPage() {
         <div>
           <div className="aspect-square border border-border rounded-lg overflow-hidden bg-secondary">
             {product.image_urls?.[0] && (
-              <img src={product.image_urls[0]} alt={product.name} className="w-full h-full object-cover" />
+              <img
+                src={product.image_urls[0]}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
             )}
             {!product.image_urls?.[0] && isEditor && (
               <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-2">
@@ -112,7 +165,10 @@ function ProductPage() {
           {(product.image_urls?.length ?? 0) > 1 && (
             <div className="grid grid-cols-4 gap-2 mt-3">
               {product.image_urls!.slice(0, 4).map((u: string, i: number) => (
-                <div key={i} className="aspect-square border border-border rounded overflow-hidden bg-secondary">
+                <div
+                  key={i}
+                  className="aspect-square border border-border rounded overflow-hidden bg-secondary"
+                >
                   <img src={u} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
@@ -130,9 +186,15 @@ function ProductPage() {
 
         {/* Info */}
         <div>
-          {brand && <div className="text-xs font-mono uppercase tracking-wider text-orange mb-2">{brand.name}</div>}
+          {brand && (
+            <div className="text-xs font-mono uppercase tracking-wider text-orange mb-2">
+              {brand.name}
+            </div>
+          )}
           <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">{product.name}</h1>
-          {product.sku && <div className="mt-2 text-sm text-muted-foreground font-mono">SKU: {product.sku}</div>}
+          {product.sku && (
+            <div className="mt-2 text-sm text-muted-foreground font-mono">SKU: {product.sku}</div>
+          )}
           {product.price && (
             <div className="mt-3 text-2xl font-bold text-navy">
               {product.currency === "INR" ? "₹" : product.currency === "USD" ? "$" : "€"}
@@ -150,7 +212,12 @@ function ProductPage() {
           <div className="mt-6 flex flex-wrap gap-2">
             <button
               onClick={() => {
-                addItem({ product_id: product.id, product_name: product.name ?? "", quantity: 1, slug: product.slug });
+                addItem({
+                  product_id: product.id,
+                  product_name: product.name ?? "",
+                  quantity: 1,
+                  slug: product.slug,
+                });
                 toast.success("Added to quote basket");
               }}
               className="inline-flex items-center gap-2 rounded bg-orange px-5 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
@@ -166,7 +233,10 @@ function ProductPage() {
               <MessageCircle className="h-4 w-4" /> WhatsApp Enquiry
             </a>
             {product.datasheet_url && (
-              <a href={product.datasheet_url} className="inline-flex items-center gap-2 rounded border border-border px-5 py-3 text-sm font-semibold hover:border-orange hover:text-orange">
+              <a
+                href={product.datasheet_url}
+                className="inline-flex items-center gap-2 rounded border border-border px-5 py-3 text-sm font-semibold hover:border-orange hover:text-orange"
+              >
                 <Download className="h-4 w-4" /> Datasheet
               </a>
             )}
@@ -183,7 +253,9 @@ function ProductPage() {
           {/* Specs */}
           {Object.keys(specs).length > 0 && (
             <div className="mt-8">
-              <h2 className="font-display text-lg font-bold text-navy mb-3">Technical Specifications</h2>
+              <h2 className="font-display text-lg font-bold text-navy mb-3">
+                Technical Specifications
+              </h2>
               <div className="border border-border rounded overflow-hidden">
                 <table className="w-full text-sm">
                   <tbody>
@@ -215,19 +287,22 @@ function ProductPage() {
                 <ul className="space-y-2">
                   {b.items.map((it: string) => (
                     <li key={it} className="flex gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-orange shrink-0 mt-0.5" />{it}
+                      <CheckCircle2 className="h-4 w-4 text-orange shrink-0 mt-0.5" />
+                      {it}
                     </li>
                   ))}
                 </ul>
               </div>
-            )
+            ),
         )}
       </section>
 
       {/* Long description */}
       {product.long_description && (
         <section className="container mx-auto px-4 pb-10">
-          <div className="prose prose-sm max-w-3xl whitespace-pre-line text-foreground">{product.long_description}</div>
+          <div className="prose prose-sm max-w-3xl whitespace-pre-line text-foreground">
+            {product.long_description}
+          </div>
         </section>
       )}
 
@@ -244,11 +319,22 @@ function ProductPage() {
                 className="border border-border rounded-lg overflow-hidden bg-card hover:border-orange transition-colors"
               >
                 <div className="aspect-square bg-secondary">
-                  {p.image_urls?.[0] && <img src={p.image_urls[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />}
+                  {p.image_urls?.[0] && (
+                    <img
+                      src={p.image_urls[0]}
+                      alt={p.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
                 </div>
                 <div className="p-3">
                   <div className="font-semibold text-sm line-clamp-2 text-navy">{p.name}</div>
-                  {p.price && <div className="text-xs text-orange font-semibold mt-1">₹{p.price.toLocaleString()}</div>}
+                  {p.price && (
+                    <div className="text-xs text-orange font-semibold mt-1">
+                      ₹{p.price.toLocaleString()}
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}
@@ -268,7 +354,15 @@ function ProductPage() {
   );
 }
 
-function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: (d: any) => Promise<void>; onClose: () => void }) {
+function ProductEditModal({
+  product,
+  onSave,
+  onClose,
+}: {
+  product: any;
+  onSave: (d: any) => Promise<void>;
+  onClose: () => void;
+}) {
   const [form, setForm] = useState({
     name: product.name ?? "",
     sku: product.sku ?? "",
@@ -281,7 +375,11 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
     features: (product.features ?? []).join("\n"),
     applications: (product.applications ?? []).join("\n"),
     compatible_machines: (product.compatible_machines ?? []).join("\n"),
-    specs: product.specs ? Object.entries(product.specs).map(([k, v]) => `${k}: ${v}`).join("\n") : "",
+    specs: product.specs
+      ? Object.entries(product.specs)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join("\n")
+      : "",
     is_published: product.is_published ?? true,
   });
   const [saving, setSaving] = useState(false);
@@ -291,7 +389,10 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
 
   function parseSpecs(raw: string): Record<string, string> {
     const r: Record<string, string> = {};
-    raw.split("\n").forEach((line) => { const i = line.indexOf(":"); if (i > 0) r[line.slice(0, i).trim()] = line.slice(i + 1).trim(); });
+    raw.split("\n").forEach((line) => {
+      const i = line.indexOf(":");
+      if (i > 0) r[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+    });
     return r;
   }
 
@@ -309,7 +410,11 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
         else setForm((f) => ({ ...f, video_urls: [...f.video_urls, url] }));
       }
       toast.success("Uploaded!");
-    } catch (e: any) { toast.error(e.message); } finally { setUploading(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function submit(e: React.FormEvent) {
@@ -327,14 +432,19 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
         video_urls: form.video_urls.length ? form.video_urls : undefined,
         features: form.features ? form.features.split("\n").filter(Boolean) : undefined,
         applications: form.applications ? form.applications.split("\n").filter(Boolean) : undefined,
-        compatible_machines: form.compatible_machines ? form.compatible_machines.split("\n").filter(Boolean) : undefined,
+        compatible_machines: form.compatible_machines
+          ? form.compatible_machines.split("\n").filter(Boolean)
+          : undefined,
         specs: form.specs ? parseSpecs(form.specs) : undefined,
         is_published: form.is_published,
       });
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   }
 
-  const inp = "w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
+  const inp =
+    "w-full rounded border border-input bg-background px-3 py-2 text-sm focus:border-orange focus:outline-none";
   const lbl = "text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block";
 
   return (
@@ -345,24 +455,75 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
             <h2 className="font-display text-xl font-bold text-navy">Edit Product</h2>
             <p className="text-xs text-muted-foreground">{product.name}</p>
           </div>
-          <button onClick={onClose} className="grid h-8 w-8 place-items-center rounded hover:bg-secondary"><X className="h-4 w-4" /></button>
+          <button
+            onClick={onClose}
+            className="grid h-8 w-8 place-items-center rounded hover:bg-secondary"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
         <form onSubmit={submit} className="p-6 space-y-5">
           <div className="grid sm:grid-cols-2 gap-4">
-            <div><label className={lbl}>Name</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inp} /></div>
-            <div><label className={lbl}>SKU</label><input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} className={inp} /></div>
+            <div>
+              <label className={lbl}>Name</label>
+              <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className={inp}
+              />
+            </div>
+            <div>
+              <label className={lbl}>SKU</label>
+              <input
+                value={form.sku}
+                onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                className={inp}
+              />
+            </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
-            <div><label className={lbl}>Price</label><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className={inp} /></div>
+            <div>
+              <label className={lbl}>Price</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: e.target.value })}
+                className={inp}
+              />
+            </div>
             <div>
               <label className={lbl}>Currency</label>
-              <select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })} className={inp}>
-                <option value="INR">INR (₹)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option>
+              <select
+                value={form.currency}
+                onChange={(e) => setForm({ ...form, currency: e.target.value })}
+                className={inp}
+              >
+                <option value="INR">INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
               </select>
             </div>
           </div>
-          <div><label className={lbl}>Short Description</label><textarea rows={2} value={form.short_description} onChange={(e) => setForm({ ...form, short_description: e.target.value })} className={inp} /></div>
-          <div><label className={lbl}>Full Description</label><textarea rows={4} value={form.long_description} onChange={(e) => setForm({ ...form, long_description: e.target.value })} className={inp} /></div>
+          <div>
+            <label className={lbl}>Short Description</label>
+            <textarea
+              rows={2}
+              value={form.short_description}
+              onChange={(e) => setForm({ ...form, short_description: e.target.value })}
+              className={inp}
+            />
+          </div>
+          <div>
+            <label className={lbl}>Full Description</label>
+            <textarea
+              rows={4}
+              value={form.long_description}
+              onChange={(e) => setForm({ ...form, long_description: e.target.value })}
+              className={inp}
+            />
+          </div>
 
           {/* Images */}
           <div>
@@ -370,17 +531,39 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
             <div className="flex flex-wrap gap-2 mb-2">
               {form.image_urls.map((url, i) => (
                 <div key={i} className="relative group">
-                  <img src={url} alt="" className="h-16 w-16 rounded object-cover border border-border" />
-                  <button type="button" onClick={() => setForm((f) => ({ ...f, image_urls: f.image_urls.filter((_, j) => j !== i) }))} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <img
+                    src={url}
+                    alt=""
+                    className="h-16 w-16 rounded object-cover border border-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((f) => ({ ...f, image_urls: f.image_urls.filter((_, j) => j !== i) }))
+                    }
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center opacity-0 group-hover:opacity-100"
+                  >
                     <X className="h-3 w-3" />
                   </button>
                 </div>
               ))}
-              <button type="button" onClick={() => imageRef.current?.click()} disabled={uploading} className="h-16 w-16 rounded border-2 border-dashed border-border hover:border-orange flex items-center justify-center text-muted-foreground hover:text-orange transition-colors">
+              <button
+                type="button"
+                onClick={() => imageRef.current?.click()}
+                disabled={uploading}
+                className="h-16 w-16 rounded border-2 border-dashed border-border hover:border-orange flex items-center justify-center text-muted-foreground hover:text-orange transition-colors"
+              >
                 <Plus className="h-5 w-5" />
               </button>
             </div>
-            <input ref={imageRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleUpload(e.target.files, "image")} />
+            <input
+              ref={imageRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleUpload(e.target.files, "image")}
+            />
           </div>
 
           {/* Videos */}
@@ -390,33 +573,102 @@ function ProductEditModal({ product, onSave, onClose }: { product: any; onSave: 
               {form.video_urls.map((url, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs">
                   <span className="flex-1 truncate text-muted-foreground">{url}</span>
-                  <button type="button" onClick={() => setForm((f) => ({ ...f, video_urls: f.video_urls.filter((_, j) => j !== i) }))} className="text-red-400 hover:text-red-600"><Trash2 className="h-3.5 w-3.5" /></button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((f) => ({ ...f, video_urls: f.video_urls.filter((_, j) => j !== i) }))
+                    }
+                    className="text-red-400 hover:text-red-600"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               ))}
             </div>
-            <button type="button" onClick={() => videoRef.current?.click()} disabled={uploading} className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs hover:border-orange hover:text-orange">
+            <button
+              type="button"
+              onClick={() => videoRef.current?.click()}
+              disabled={uploading}
+              className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs hover:border-orange hover:text-orange"
+            >
               <Upload className="h-3.5 w-3.5" /> Upload Video
             </button>
-            <input ref={videoRef} type="file" accept="video/*" multiple className="hidden" onChange={(e) => handleUpload(e.target.files, "video")} />
+            <input
+              ref={videoRef}
+              type="file"
+              accept="video/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleUpload(e.target.files, "video")}
+            />
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4">
-            <div><label className={lbl}>Features (one/line)</label><textarea rows={4} value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} className={inp} /></div>
-            <div><label className={lbl}>Applications (one/line)</label><textarea rows={4} value={form.applications} onChange={(e) => setForm({ ...form, applications: e.target.value })} className={inp} /></div>
-            <div><label className={lbl}>Machines (one/line)</label><textarea rows={4} value={form.compatible_machines} onChange={(e) => setForm({ ...form, compatible_machines: e.target.value })} className={inp} /></div>
+            <div>
+              <label className={lbl}>Features (one/line)</label>
+              <textarea
+                rows={4}
+                value={form.features}
+                onChange={(e) => setForm({ ...form, features: e.target.value })}
+                className={inp}
+              />
+            </div>
+            <div>
+              <label className={lbl}>Applications (one/line)</label>
+              <textarea
+                rows={4}
+                value={form.applications}
+                onChange={(e) => setForm({ ...form, applications: e.target.value })}
+                className={inp}
+              />
+            </div>
+            <div>
+              <label className={lbl}>Machines (one/line)</label>
+              <textarea
+                rows={4}
+                value={form.compatible_machines}
+                onChange={(e) => setForm({ ...form, compatible_machines: e.target.value })}
+                className={inp}
+              />
+            </div>
           </div>
 
-          <div><label className={lbl}>Specs (Key: Value per line)</label><textarea rows={4} value={form.specs} onChange={(e) => setForm({ ...form, specs: e.target.value })} placeholder={"Flow Rate: 75 LPM\nPressure: 350 bar"} className={inp} /></div>
+          <div>
+            <label className={lbl}>Specs (Key: Value per line)</label>
+            <textarea
+              rows={4}
+              value={form.specs}
+              onChange={(e) => setForm({ ...form, specs: e.target.value })}
+              placeholder={"Flow Rate: 75 LPM\nPressure: 350 bar"}
+              className={inp}
+            />
+          </div>
 
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.is_published} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} className="accent-orange h-4 w-4" />
+            <input
+              type="checkbox"
+              checked={form.is_published}
+              onChange={(e) => setForm({ ...form, is_published: e.target.checked })}
+              className="accent-orange h-4 w-4"
+            />
             <span className="text-sm font-medium">Published (visible on site)</span>
           </label>
 
           <div className="flex justify-end gap-3 pt-2 border-t border-border">
-            <button type="button" onClick={onClose} className="rounded border border-border px-5 py-2.5 text-sm font-semibold hover:bg-secondary">Cancel</button>
-            <button type="submit" disabled={saving || uploading} className="flex items-center gap-2 rounded bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90 disabled:opacity-50">
-              <Save className="h-4 w-4" />{saving ? "Saving..." : "Save Changes"}
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded border border-border px-5 py-2.5 text-sm font-semibold hover:bg-secondary"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving || uploading}
+              className="flex items-center gap-2 rounded bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90 disabled:opacity-50"
+            >
+              <Save className="h-4 w-4" />
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

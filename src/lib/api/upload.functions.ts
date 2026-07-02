@@ -25,8 +25,13 @@ export const uploadFile = createServerFn({ method: "POST" }).handler(async () =>
   if (file.size > maxSize) throw new Error("File too large (max 50MB)");
 
   const allowedTypes = [
-    "image/jpeg", "image/png", "image/webp", "image/gif",
-    "video/mp4", "video/webm", "video/avi",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "video/mp4",
+    "video/webm",
+    "video/avi",
     "application/pdf",
   ];
   if (!allowedTypes.includes(file.type)) throw new Error(`File type not allowed: ${file.type}`);

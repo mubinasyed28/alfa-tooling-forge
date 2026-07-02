@@ -44,10 +44,7 @@ export const updateIndustry = createServerFn({ method: "POST" })
     await requireEditor();
     const { getCollection } = await import("./db.server");
     const col = await getCollection("industries");
-    await col.updateOne(
-      { _id: new ObjectId(input.id) },
-      { $set: input.data }
-    );
+    await col.updateOne({ _id: new ObjectId(input.id) }, { $set: input.data });
     return { ok: true };
   });
 

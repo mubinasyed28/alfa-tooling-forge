@@ -40,11 +40,17 @@ export const Route = createFileRoute("/api/upload")({
           }
 
           const allowedTypes = [
-            "image/jpeg", "image/png", "image/webp", "image/gif",
-            "video/mp4", "video/webm", "video/ogg", "video/quicktime",
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "video/mp4",
+            "video/webm",
+            "video/ogg",
+            "video/quicktime",
             "application/pdf",
           ];
-          
+
           if (!allowedTypes.includes(file.type)) {
             return new Response(JSON.stringify({ error: `File type not allowed: ${file.type}` }), {
               status: 400,

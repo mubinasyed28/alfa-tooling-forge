@@ -59,7 +59,11 @@ export const listAllProducts = createServerFn({ method: "GET" })
     const { getCollection } = await import("./db.server");
     const products = await getCollection("products");
     const filter = data.q ? { name: new RegExp(data.q, "i") } : {};
-    const prods = await products.find(filter as any).sort({ created_at: -1 }).limit(200).toArray();
+    const prods = await products
+      .find(filter as any)
+      .sort({ created_at: -1 })
+      .limit(200)
+      .toArray();
     return prods.map(toId);
   });
 
@@ -69,7 +73,14 @@ export const createProduct = createServerFn({ method: "POST" })
     await requireEditor();
     const { getCollection } = await import("./db.server");
     const products = await getCollection("products");
-    let slug = data.slug ?? (data.name ? data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") : `product-${Date.now()}`);
+    let slug =
+      data.slug ??
+      (data.name
+        ? data.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "")
+        : `product-${Date.now()}`);
     const existing = await products.findOne({ slug });
     if (existing) slug = `${slug}-${Date.now()}`;
     const doc = { ...data, slug, created_at: new Date(), updated_at: new Date() };
@@ -85,7 +96,7 @@ export const updateProduct = createServerFn({ method: "POST" })
     const products = await getCollection("products");
     await products.updateOne(
       { _id: new ObjectId(input.id) },
-      { $set: { ...input.data, updated_at: new Date() } }
+      { $set: { ...input.data, updated_at: new Date() } },
     );
     return { ok: true };
   });
@@ -117,17 +128,24 @@ export const listBrandsAdmin = createServerFn({ method: "GET" }).handler(async (
 });
 
 export const createCategory = createServerFn({ method: "POST" })
-  .validator((d: unknown) => z.object({
-    name: z.string().min(1).max(200),
-    description: z.string().max(2000).optional().nullable(),
-    parent_id: z.string().optional().nullable(),
-    sort_order: z.number().optional().nullable(),
-  }).parse(d))
+  .validator((d: unknown) =>
+    z
+      .object({
+        name: z.string().min(1).max(200),
+        description: z.string().max(2000).optional().nullable(),
+        parent_id: z.string().optional().nullable(),
+        sort_order: z.number().optional().nullable(),
+      })
+      .parse(d),
+  )
   .handler(async ({ data }) => {
     await requireEditor();
     const { getCollection } = await import("./db.server");
     const col = await getCollection("categories");
-    let slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    let slug = data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
     const existing = await col.findOne({ slug });
     if (existing) slug = `${slug}-${Date.now()}`;
     const doc = {
@@ -136,23 +154,27 @@ export const createCategory = createServerFn({ method: "POST" })
       description: data.description || null,
       parent_id: data.parent_id || null,
       sort_order: data.sort_order || 0,
-      created_at: new Date()
+      created_at: new Date(),
     };
     const result = await col.insertOne(doc as any);
     return { id: result.insertedId.toString(), name: data.name, slug };
   });
 
 export const updateCategory = createServerFn({ method: "POST" })
-  .validator((d: unknown) => z.object({
-    id: z.string(),
-    data: z.object({
-      name: z.string().min(1).max(200),
-      slug: z.string().min(1).max(200),
-      description: z.string().max(2000).optional().nullable(),
-      parent_id: z.string().optional().nullable(),
-      sort_order: z.number().optional().nullable(),
-    })
-  }).parse(d))
+  .validator((d: unknown) =>
+    z
+      .object({
+        id: z.string(),
+        data: z.object({
+          name: z.string().min(1).max(200),
+          slug: z.string().min(1).max(200),
+          description: z.string().max(2000).optional().nullable(),
+          parent_id: z.string().optional().nullable(),
+          sort_order: z.number().optional().nullable(),
+        }),
+      })
+      .parse(d),
+  )
   .handler(async ({ data: input }) => {
     await requireEditor();
     const { getCollection } = await import("./db.server");
@@ -166,9 +188,9 @@ export const updateCategory = createServerFn({ method: "POST" })
           description: input.data.description || null,
           parent_id: input.data.parent_id || null,
           sort_order: input.data.sort_order || 0,
-          updated_at: new Date()
-        }
-      }
+          updated_at: new Date(),
+        },
+      },
     );
     return { ok: true };
   });
@@ -178,21 +200,18 @@ export const deleteCategory = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await requireEditor();
     const { getCollection } = await import("./db.server");
-    
+
     // Set matching product.category_id reference to null
     const products = await getCollection("products");
     await products.updateMany(
       { category_id: data.id },
-      { $set: { category_id: null, updated_at: new Date() } }
+      { $set: { category_id: null, updated_at: new Date() } },
     );
-    
+
     // Set parent_id of child categories to null
     const col = await getCollection("categories");
-    await col.updateMany(
-      { parent_id: data.id },
-      { $set: { parent_id: null } }
-    );
-    
+    await col.updateMany({ parent_id: data.id }, { $set: { parent_id: null } });
+
     await col.deleteOne({ _id: new ObjectId(data.id) });
     return { ok: true };
   });
@@ -203,16 +222,18 @@ export const createBrand = createServerFn({ method: "POST" })
     await requireEditor();
     const { getCollection } = await import("./db.server");
     const col = await getCollection("brands");
-    let slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    let slug = data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
     const existing = await col.findOne({ slug });
     if (existing) slug = `${slug}-${Date.now()}`;
     const doc = {
       name: data.name,
       slug,
       sort_order: 0,
-      created_at: new Date()
+      created_at: new Date(),
     };
     const result = await col.insertOne(doc as any);
     return { id: result.insertedId.toString(), name: data.name, slug };
   });
-

@@ -19,8 +19,13 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">The page you're looking for doesn't exist.</p>
-        <Link to="/" className="mt-6 inline-flex items-center justify-center rounded bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist.
+        </p>
+        <Link
+          to="/"
+          className="mt-6 inline-flex items-center justify-center rounded bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground"
+        >
           Go home
         </Link>
       </div>
@@ -58,9 +63,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Alfa Tooling Systems | CNC Tooling & Industrial Spare Parts Supplier India" },
-      { name: "description", content: "Trusted supplier of CNC machine tooling, filtration systems, ATC spare parts and industrial maintenance products in India since 2005." },
+      {
+        name: "description",
+        content:
+          "Trusted supplier of CNC machine tooling, filtration systems, ATC spare parts and industrial maintenance products in India since 2005.",
+      },
       { property: "og:title", content: "Alfa Tooling Systems | CNC Tooling & Spare Parts" },
-      { property: "og:description", content: "Quality CNC tooling, filtration systems and industrial spare parts since 2005." },
+      {
+        property: "og:description",
+        content: "Quality CNC tooling, filtration systems and industrial spare parts since 2005.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Alfa Tooling Systems" },
       { name: "twitter:card", content: "summary" },

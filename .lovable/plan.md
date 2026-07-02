@@ -1,4 +1,3 @@
-
 # Alfa Tooling Systems — Build Plan
 
 A full B2B industrial supplier site with public catalog, RFQ system, resources/blog, and an authenticated admin dashboard. Built on TanStack Start + Lovable Cloud (Postgres + auth + storage). Given the scope, this is staged across multiple turns; **Turn 1 ships the entire public site + RFQ + auth + admin shell with read/list**, then later turns add full admin CRUD polish.
@@ -62,6 +61,7 @@ Tables (all with GRANTs + RLS):
 Public reads use server functions with `supabaseAdmin` (safe column projection); writes (RFQ submit, contact) via server functions with Zod validation; admin writes gated by `has_role(auth.uid(),'admin')`.
 
 Storage buckets:
+
 - `product-images` (public)
 - `datasheets` (public)
 - `rfq-uploads` (private, signed URLs for admin)
@@ -88,7 +88,7 @@ Storage buckets:
 
 ## SEO
 
-- Per-route `head()` with title, description, og:*, canonical (leaf only), og:url (self-ref relative).
+- Per-route `head()` with title, description, og:\*, canonical (leaf only), og:url (self-ref relative).
 - JSON-LD: `Organization` in `__root.tsx`; `Product` on product pages; `Article` on posts; `BreadcrumbList` on deep routes.
 - Dynamic `/sitemap.xml` server route enumerating static routes + all products/categories/brands/posts.
 - `public/robots.txt` with `Allow: /`.

@@ -6,7 +6,7 @@ import { ArrowRight, ShoppingCart, X, Plus, Pencil, Trash2 } from "lucide-react"
 import { useQuoteStore } from "@/lib/quote-store";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import { useServerFn } from "@tanstack/react-start";
 import { createCategory, updateCategory, deleteCategory } from "@/lib/product-admin.functions";
 import { Button } from "@/components/ui/button";
@@ -29,13 +29,20 @@ import {
 } from "@/components/ui/select";
 
 const catsQ = queryOptions({ queryKey: ["categories"], queryFn: () => listCategoriesTree() });
-const prodsQ = queryOptions({ queryKey: ["all-published-products"], queryFn: () => listAllPublishedProducts() });
+const prodsQ = queryOptions({
+  queryKey: ["all-published-products"],
+  queryFn: () => listAllPublishedProducts(),
+});
 
 export const Route = createFileRoute("/catalog/")({
   head: () => ({
     meta: [
       { title: "Product Catalog — CNC Spare Parts & Industrial Tooling | Alfa Tooling" },
-      { name: "description", content: "Browse our complete catalog of CNC tooling, filtration systems, ATC spare parts, mechanical and electrical components, sensors and hydraulic products." },
+      {
+        name: "description",
+        content:
+          "Browse our complete catalog of CNC tooling, filtration systems, ATC spare parts, mechanical and electrical components, sensors and hydraulic products.",
+      },
       { property: "og:title", content: "Product Catalog | Alfa Tooling Systems" },
       { property: "og:url", content: "/catalog" },
     ],
@@ -58,7 +65,7 @@ function Catalog() {
 
   const { isEditor } = useAuth();
   const queryClient = useQueryClient();
-  
+
   const doCreate = useServerFn(createCategory);
   const doUpdate = useServerFn(updateCategory);
   const doDelete = useServerFn(deleteCategory);
@@ -77,7 +84,12 @@ function Catalog() {
   // Auto-generate slug from name on creation
   useEffect(() => {
     if (isCreating) {
-      setSlug(name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
+      setSlug(
+        name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, ""),
+      );
     }
   }, [name, isCreating]);
 
@@ -91,7 +103,7 @@ function Catalog() {
           description: description.trim() || null,
           parent_id: parentId === "none" ? null : parentId,
           sort_order: sortOrder,
-        }
+        },
       });
       toast.success("Category created successfully!");
       setIsCreating(false);
@@ -118,8 +130,8 @@ function Catalog() {
             description: description.trim() || null,
             parent_id: parentId === "none" ? null : parentId,
             sort_order: sortOrder,
-          }
-        }
+          },
+        },
       });
       toast.success("Category updated successfully!");
       setEditingCategory(null);
@@ -170,7 +182,10 @@ function Catalog() {
   const getProductCount = (catId: string): number => {
     const direct = products.filter((p) => p.category_id === catId).length;
     const subCats = cats.filter((c) => c.parent_id === catId);
-    const subCount = subCats.reduce((acc, sub) => acc + products.filter((p) => p.category_id === sub.id).length, 0);
+    const subCount = subCats.reduce(
+      (acc, sub) => acc + products.filter((p) => p.category_id === sub.id).length,
+      0,
+    );
     return direct + subCount;
   };
 
@@ -185,12 +200,21 @@ function Catalog() {
       <section className="border-b border-border bg-secondary">
         <div className="container mx-auto px-4 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">Catalog</div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">All Product Categories</h1>
-            <p className="mt-2 text-muted-foreground max-w-2xl">Industrial tooling, spare parts and maintenance products organised by category.</p>
+            <div className="text-xs font-semibold uppercase tracking-wider text-orange mb-2">
+              Catalog
+            </div>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-navy">
+              All Product Categories
+            </h1>
+            <p className="mt-2 text-muted-foreground max-w-2xl">
+              Industrial tooling, spare parts and maintenance products organised by category.
+            </p>
           </div>
           {isEditor && (
-            <Button onClick={startCreate} className="bg-orange hover:bg-orange/90 text-white flex items-center gap-1.5 shrink-0 self-start md:self-center">
+            <Button
+              onClick={startCreate}
+              className="bg-orange hover:bg-orange/90 text-white flex items-center gap-1.5 shrink-0 self-start md:self-center"
+            >
               <Plus className="h-4 w-4" /> Create Category
             </Button>
           )}
@@ -209,49 +233,87 @@ function Catalog() {
             const count = getProductCount(t.id);
 
             return (
-              <div key={t.id} className="border border-border rounded-lg p-6 bg-card relative group/card flex flex-col justify-between">
+              <div
+                key={t.id}
+                className="border border-border rounded-lg p-6 bg-card relative group/card flex flex-col justify-between"
+              >
                 <div>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <Link to="/catalog/$category" params={{ category: t.slug }} className="font-display text-xl font-bold text-navy hover:text-orange inline-flex items-center gap-1">
+                      <Link
+                        to="/catalog/$category"
+                        params={{ category: t.slug }}
+                        className="font-display text-xl font-bold text-navy hover:text-orange inline-flex items-center gap-1"
+                      >
                         {t.name} <ArrowRight className="h-4 w-4" />
                       </Link>
-                      {t.description && <p className="text-sm text-muted-foreground mt-1">{t.description}</p>}
+                      {t.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{t.description}</p>
+                      )}
                     </div>
                     {isEditor && (
                       <div className="flex items-center gap-1 shrink-0">
                         {!hasProds && (
-                          <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-semibold mr-1">No products</span>
+                          <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-semibold mr-1">
+                            No products
+                          </span>
                         )}
-                        <span className="text-[10px] bg-secondary text-navy px-2 py-0.5 rounded font-medium mr-2">{count} {count === 1 ? 'product' : 'products'}</span>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-orange" onClick={() => startEdit(t)}>
+                        <span className="text-[10px] bg-secondary text-navy px-2 py-0.5 rounded font-medium mr-2">
+                          {count} {count === 1 ? "product" : "products"}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-orange"
+                          onClick={() => startEdit(t)}
+                        >
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-600" onClick={() => setDeletingCategory(t)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-600"
+                          onClick={() => setDeletingCategory(t)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     )}
                   </div>
-                  
+
                   {subs.length > 0 && (
                     <ul className="mt-4 grid grid-cols-2 gap-1 border-t border-border/50 pt-4">
                       {subs.map((s) => {
                         const subCount = products.filter((p) => p.category_id === s.id).length;
                         return (
-                          <li key={s.id} className="group/item flex items-center justify-between py-1 pr-2">
-                            <Link to="/catalog/$category" params={{ category: s.slug }} className="text-sm text-foreground hover:text-orange flex-1 truncate">
+                          <li
+                            key={s.id}
+                            className="group/item flex items-center justify-between py-1 pr-2"
+                          >
+                            <Link
+                              to="/catalog/$category"
+                              params={{ category: s.slug }}
+                              className="text-sm text-foreground hover:text-orange flex-1 truncate"
+                            >
                               · {s.name}
                               {isEditor && (
-                                <span className="text-[9px] text-muted-foreground ml-1.5 font-medium">({subCount})</span>
+                                <span className="text-[9px] text-muted-foreground ml-1.5 font-medium">
+                                  ({subCount})
+                                </span>
                               )}
                             </Link>
                             {isEditor && (
                               <div className="opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center gap-0.5">
-                                <button className="p-1 text-muted-foreground hover:text-orange rounded" onClick={() => startEdit(s)}>
+                                <button
+                                  className="p-1 text-muted-foreground hover:text-orange rounded"
+                                  onClick={() => startEdit(s)}
+                                >
                                   <Pencil className="h-3 w-3" />
                                 </button>
-                                <button className="p-1 text-muted-foreground hover:text-red-600 rounded" onClick={() => setDeletingCategory(s)}>
+                                <button
+                                  className="p-1 text-muted-foreground hover:text-red-600 rounded"
+                                  onClick={() => setDeletingCategory(s)}
+                                >
                                   <Trash2 className="h-3 w-3" />
                                 </button>
                               </div>
@@ -270,40 +332,56 @@ function Catalog() {
 
       <section className="container mx-auto px-4 py-12">
         <div className="border-t border-border pt-10">
-          <h2 className="font-display text-2xl font-bold text-navy mb-6">All Products ({products.length})</h2>
+          <h2 className="font-display text-2xl font-bold text-navy mb-6">
+            All Products ({products.length})
+          </h2>
           {products.length === 0 ? (
             <p className="text-muted-foreground text-sm">No products found in the catalog.</p>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {products.map((p) => {
                 return (
-                  <div key={p.id} className="group border border-border rounded-lg overflow-hidden bg-card hover:border-orange hover:shadow-md transition-all flex flex-col justify-between">
+                  <div
+                    key={p.id}
+                    className="group border border-border rounded-lg overflow-hidden bg-card hover:border-orange hover:shadow-md transition-all flex flex-col justify-between"
+                  >
                     <div>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setSelectedProduct(p)}
                         className="block w-full aspect-square bg-secondary overflow-hidden text-left focus:outline-none cursor-pointer"
                       >
                         {p.image_urls?.[0] ? (
-                          <img src={p.image_urls[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
+                          <img
+                            src={p.image_urls[0]}
+                            alt={p.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                          />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs bg-muted">No Image</div>
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs bg-muted">
+                            No Image
+                          </div>
                         )}
                       </button>
                       <div className="p-4 pb-2">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{p.sku || "NO SKU"}</div>
-                        <button 
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                          {p.sku || "NO SKU"}
+                        </div>
+                        <button
                           type="button"
                           onClick={() => setSelectedProduct(p)}
                           className="font-display font-bold text-navy mt-1 line-clamp-2 hover:text-orange text-left w-full focus:outline-none cursor-pointer"
                         >
                           {p.name}
                         </button>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.short_description}</p>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          {p.short_description}
+                        </p>
                       </div>
                     </div>
                     <div className="p-4 pt-0 space-y-2">
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setSelectedProduct(p)}
                         className="text-xs text-orange hover:underline font-semibold block text-center py-1 w-full focus:outline-none cursor-pointer"
@@ -313,7 +391,12 @@ function Catalog() {
                       <button
                         type="button"
                         onClick={() => {
-                          addItem({ product_id: p.id, product_name: p.name ?? "", quantity: 1, slug: p.slug });
+                          addItem({
+                            product_id: p.id,
+                            product_name: p.name ?? "",
+                            quantity: 1,
+                            slug: p.slug,
+                          });
                           toast.success("Added to quote basket");
                         }}
                         className="w-full inline-flex items-center justify-center gap-1.5 rounded bg-orange py-2 text-xs font-semibold text-orange-foreground hover:opacity-90 transition-opacity"
@@ -336,27 +419,44 @@ function Catalog() {
             <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background rounded-t-xl z-10">
               <div>
                 <h2 className="font-display text-xl font-bold text-navy">{selectedProduct.name}</h2>
-                {selectedProduct.sku && <p className="text-xs text-muted-foreground font-mono">SKU: {selectedProduct.sku}</p>}
+                {selectedProduct.sku && (
+                  <p className="text-xs text-muted-foreground font-mono">
+                    SKU: {selectedProduct.sku}
+                  </p>
+                )}
               </div>
-              <button onClick={() => setSelectedProduct(null)} className="grid h-8 w-8 place-items-center rounded hover:bg-secondary">
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="grid h-8 w-8 place-items-center rounded hover:bg-secondary"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* Product Media */}
               <div className="aspect-video bg-secondary rounded-lg overflow-hidden border border-border">
                 {selectedProduct.image_urls?.[0] ? (
-                  <img src={selectedProduct.image_urls[0]} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                  <img
+                    src={selectedProduct.image_urls[0]}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm bg-muted">No Image Available</div>
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm bg-muted">
+                    No Image Available
+                  </div>
                 )}
               </div>
 
               {/* Product Price */}
               {selectedProduct.price && (
                 <div className="text-2xl font-bold text-navy">
-                  {selectedProduct.currency === "INR" ? "₹" : selectedProduct.currency === "USD" ? "$" : "€"}
+                  {selectedProduct.currency === "INR"
+                    ? "₹"
+                    : selectedProduct.currency === "USD"
+                      ? "$"
+                      : "€"}
                   {selectedProduct.price.toLocaleString()}
                 </div>
               )}
@@ -365,14 +465,22 @@ function Catalog() {
               <div className="space-y-4">
                 {selectedProduct.short_description && (
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Short Description</h3>
-                    <p className="mt-1 text-sm text-foreground">{selectedProduct.short_description}</p>
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Short Description
+                    </h3>
+                    <p className="mt-1 text-sm text-foreground">
+                      {selectedProduct.short_description}
+                    </p>
                   </div>
                 )}
                 {selectedProduct.long_description && (
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Description</h3>
-                    <p className="mt-1 text-sm text-foreground whitespace-pre-line leading-relaxed">{selectedProduct.long_description}</p>
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Full Description
+                    </h3>
+                    <p className="mt-1 text-sm text-foreground whitespace-pre-line leading-relaxed">
+                      {selectedProduct.long_description}
+                    </p>
                   </div>
                 )}
               </div>
@@ -380,13 +488,17 @@ function Catalog() {
               {/* Technical Specifications */}
               {selectedProduct.specs && Object.keys(selectedProduct.specs).length > 0 && (
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Technical Specifications</h3>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                    Technical Specifications
+                  </h3>
                   <div className="border border-border rounded overflow-hidden">
                     <table className="w-full text-xs">
                       <tbody>
                         {Object.entries(selectedProduct.specs).map(([k, v], idx) => (
                           <tr key={k} className={idx % 2 ? "bg-secondary" : ""}>
-                            <td className="px-3 py-1.5 font-medium text-muted-foreground w-1/2">{k}</td>
+                            <td className="px-3 py-1.5 font-medium text-muted-foreground w-1/2">
+                              {k}
+                            </td>
                             <td className="px-3 py-1.5 text-foreground">{String(v)}</td>
                           </tr>
                         ))}
@@ -402,7 +514,9 @@ function Catalog() {
                   <div className="border border-border rounded p-3 bg-secondary/30">
                     <h4 className="text-xs font-bold text-navy mb-1.5">Features</h4>
                     <ul className="text-xs space-y-1 list-disc list-inside text-muted-foreground">
-                      {selectedProduct.features.map((f: string) => <li key={f}>{f}</li>)}
+                      {selectedProduct.features.map((f: string) => (
+                        <li key={f}>{f}</li>
+                      ))}
                     </ul>
                   </div>
                 )}
@@ -410,28 +524,41 @@ function Catalog() {
                   <div className="border border-border rounded p-3 bg-secondary/30">
                     <h4 className="text-xs font-bold text-navy mb-1.5">Applications</h4>
                     <ul className="text-xs space-y-1 list-disc list-inside text-muted-foreground">
-                      {selectedProduct.applications.map((a: string) => <li key={a}>{a}</li>)}
+                      {selectedProduct.applications.map((a: string) => (
+                        <li key={a}>{a}</li>
+                      ))}
                     </ul>
                   </div>
                 )}
-                {selectedProduct.compatible_machines && selectedProduct.compatible_machines.length > 0 && (
-                  <div className="border border-border rounded p-3 bg-secondary/30">
-                    <h4 className="text-xs font-bold text-navy mb-1.5">Compatible Machines</h4>
-                    <ul className="text-xs space-y-1 list-disc list-inside text-muted-foreground">
-                      {selectedProduct.compatible_machines.map((m: string) => <li key={m}>{m}</li>)}
-                    </ul>
-                  </div>
-                )}
+                {selectedProduct.compatible_machines &&
+                  selectedProduct.compatible_machines.length > 0 && (
+                    <div className="border border-border rounded p-3 bg-secondary/30">
+                      <h4 className="text-xs font-bold text-navy mb-1.5">Compatible Machines</h4>
+                      <ul className="text-xs space-y-1 list-disc list-inside text-muted-foreground">
+                        {selectedProduct.compatible_machines.map((m: string) => (
+                          <li key={m}>{m}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </div>
             </div>
 
             <div className="flex justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-background rounded-b-xl z-10">
-              <button onClick={() => setSelectedProduct(null)} className="rounded border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary">
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="rounded border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary"
+              >
                 Close
               </button>
               <button
                 onClick={() => {
-                  addItem({ product_id: selectedProduct.id, product_name: selectedProduct.name ?? "", quantity: 1, slug: selectedProduct.slug });
+                  addItem({
+                    product_id: selectedProduct.id,
+                    product_name: selectedProduct.name ?? "",
+                    quantity: 1,
+                    slug: selectedProduct.slug,
+                  });
                   toast.success("Added to quote basket");
                 }}
                 className="inline-flex items-center gap-1.5 rounded bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground hover:opacity-90 transition-opacity"
@@ -502,7 +629,9 @@ function Catalog() {
               <Button type="button" variant="outline" onClick={() => setIsCreating(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-orange text-white">Create</Button>
+              <Button type="submit" className="bg-orange text-white">
+                Create
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -574,7 +703,9 @@ function Catalog() {
               <Button type="button" variant="outline" onClick={() => setEditingCategory(null)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-orange text-white">Save Changes</Button>
+              <Button type="submit" className="bg-orange text-white">
+                Save Changes
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -588,10 +719,12 @@ function Catalog() {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete the category <span className="font-semibold text-foreground">"{deletingCategory?.name}"</span>?
+              Are you sure you want to delete the category{" "}
+              <span className="font-semibold text-foreground">"{deletingCategory?.name}"</span>?
             </p>
             <p className="text-xs text-red-600 mt-2">
-              Warning: Products referencing this category will have their category reference cleared.
+              Warning: Products referencing this category will have their category reference
+              cleared.
             </p>
           </div>
           <DialogFooter>
@@ -607,4 +740,3 @@ function Catalog() {
     </SiteLayout>
   );
 }
-

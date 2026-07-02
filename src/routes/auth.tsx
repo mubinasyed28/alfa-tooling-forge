@@ -3,17 +3,14 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { signIn, signUp } from "@/lib/auth.functions";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/use-auth";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/Layout";
 import { LogIn, UserPlus, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-    meta: [
-      { title: "Staff Login | Alfa Tooling" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Staff Login | Alfa Tooling" }, { name: "robots", content: "noindex" }],
   }),
   component: Auth,
 });
@@ -40,7 +37,8 @@ function Auth() {
   });
 
   const signUpMut = useMutation({
-    mutationFn: () => doSignUp({ data: { email: form.email, password: form.password, name: form.name } }),
+    mutationFn: () =>
+      doSignUp({ data: { email: form.email, password: form.password, name: form.name } }),
     onSuccess: () => {
       setPending(true);
       toast.success("Account created! Awaiting super admin approval.");
@@ -65,9 +63,17 @@ function Auth() {
           </div>
           <h1 className="font-display text-2xl font-bold text-navy">Account Pending Approval</h1>
           <p className="mt-3 text-muted-foreground leading-relaxed">
-            Your account has been created and is now awaiting approval by the Super Admin. You'll be able to log in once approved.
+            Your account has been created and is now awaiting approval by the Super Admin. You'll be
+            able to log in once approved.
           </p>
-          <button onClick={() => { setMode("signin"); setPending(false); setForm({ email: "", password: "", name: "" }); }} className="mt-6 text-sm text-orange underline">
+          <button
+            onClick={() => {
+              setMode("signin");
+              setPending(false);
+              setForm({ email: "", password: "", name: "" });
+            }}
+            className="mt-6 text-sm text-orange underline"
+          >
             Back to Sign In
           </button>
         </section>
@@ -92,10 +98,15 @@ function Auth() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-8 shadow-sm space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-card border border-border rounded-xl p-8 shadow-sm space-y-4"
+        >
           {mode === "signup" && (
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Name</label>
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Full Name
+              </label>
               <input
                 required
                 type="text"
@@ -108,7 +119,9 @@ function Auth() {
           )}
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</label>
+            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Email
+            </label>
             <input
               required
               type="email"
@@ -120,7 +133,9 @@ function Auth() {
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</label>
+            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Password
+            </label>
             <input
               required
               type="password"
@@ -144,7 +159,9 @@ function Auth() {
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           className="mt-5 w-full text-sm text-muted-foreground hover:text-orange transition-colors"
         >
-          {mode === "signin" ? "Need access? Request an account →" : "Already have an account? Sign in →"}
+          {mode === "signin"
+            ? "Need access? Request an account →"
+            : "Already have an account? Sign in →"}
         </button>
       </section>
     </SiteLayout>

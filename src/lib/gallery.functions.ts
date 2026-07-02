@@ -62,7 +62,7 @@ export const updateGalleryItem = createServerFn({ method: "POST" })
     const col = await getCollection("gallery");
     await col.updateOne(
       { _id: new ObjectId(input.id) },
-      { $set: { ...input.data, updated_at: new Date() } }
+      { $set: { ...input.data, updated_at: new Date() } },
     );
     return { ok: true };
   });

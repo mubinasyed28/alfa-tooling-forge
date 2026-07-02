@@ -27,7 +27,13 @@ export const listPendingUsers = createServerFn({ method: "GET" }).handler(async 
   const { getCollection } = await import("./db.server");
   const users = await getCollection("users");
   const data = await users.find({ role: "pending" }).sort({ created_at: 1 }).toArray();
-  return data.map((u: any) => ({ id: u._id.toString(), email: u.email, name: u.name, role: u.role, created_at: u.created_at }));
+  return data.map((u: any) => ({
+    id: u._id.toString(),
+    email: u.email,
+    name: u.name,
+    role: u.role,
+    created_at: u.created_at,
+  }));
 });
 
 export const listAllUsers = createServerFn({ method: "GET" }).handler(async () => {
@@ -36,8 +42,12 @@ export const listAllUsers = createServerFn({ method: "GET" }).handler(async () =
   const users = await getCollection("users");
   const data = await users.find({}).sort({ created_at: -1 }).toArray();
   return data.map((u: any) => ({
-    id: u._id.toString(), email: u.email, name: u.name, role: u.role,
-    created_at: u.created_at, approved_at: u.approved_at,
+    id: u._id.toString(),
+    email: u.email,
+    name: u.name,
+    role: u.role,
+    created_at: u.created_at,
+    approved_at: u.approved_at,
   }));
 });
 
@@ -49,7 +59,7 @@ export const approveUser = createServerFn({ method: "POST" })
     const users = await getCollection("users");
     await users.updateOne(
       { _id: new ObjectId(data.id) },
-      { $set: { role: "editor", approved_at: new Date(), approved_by: admin.id } }
+      { $set: { role: "editor", approved_at: new Date(), approved_by: admin.id } },
     );
     return { ok: true };
   });
@@ -125,10 +135,7 @@ export const setRfqStatus = createServerFn({ method: "POST" })
     await requireEditor();
     const { getCollection } = await import("./db.server");
     const rfqs = await getCollection("rfqs");
-    await rfqs.updateOne(
-      { _id: new ObjectId(data.id) },
-      { $set: { status: data.status } }
-    );
+    await rfqs.updateOne({ _id: new ObjectId(data.id) }, { $set: { status: data.status } });
     return { ok: true };
   });
 
