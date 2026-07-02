@@ -19,6 +19,7 @@ declare global {
 function buildMockDb(MOCK_DATA: Record<string, any[]>): Db {
   return new Proxy({} as Db, {
     get: (_target, prop) => {
+      if (prop === Symbol.for('isProxy')) return true;
       if (prop === "collection") {
         return (name: string) =>
           new Proxy({} as any, {
