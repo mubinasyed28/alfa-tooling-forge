@@ -1,15 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { writeFile, mkdir } from "node:fs/promises";
-import { join, extname } from "node:path";
-import { randomUUID } from "node:crypto";
 import { verifyToken } from "@/lib/auth.server";
+import { getBucket } from "@/lib/db.server";
 
 export const Route = createFileRoute("/api/upload")({
   server: {
     handlers: {
       POST: async ({ request }) => {
         try {
-          // Authentication check using cookies
+          // Authentication check
           const cookieHeader = request.headers.get("cookie");
           const match = cookieHeader?.match(/(?:^|;\s*)alfa_token=([^;]+)/);
           const token = match ? decodeURIComponent(match[1]) : null;
@@ -31,42 +29,30 @@ export const Route = createFileRoute("/api/upload")({
             });
           }
 
-          const maxSize = 50 * 1024 * 1024;
-          if (file.size > maxSize) {
-            return new Response(JSON.stringify({ error: "File too large (max 50MB)" }), {
-              status: 400,
-              headers: { "Content-Type": "application/json" },
-            });
-          }
+          const bucket = await getBucket();
+          const buffer = await file.arrayBuffer();
+          
+          // Create upload stream to GridFS
+          const uploadStream = bucket.openUploadStream(file.name, {
+            metadata: {
+              contentType: file.type,
+              originalName: file.name,
+              uploadedBy: user.id
+            }
+          });
 
-          const allowedTypes = [
-            "image/jpeg",
-            "image/png",
-            "image/webp",
-            "image/gif",
-            "video/mp4",
-            "video/webm",
-            "video/ogg",
-            "video/quicktime",
-            "application/pdf",
-          ];
+          // Write buffer to stream
+          await new Promise((resolve, reject) => {
+            uploadStream.on('error', reject);
+            uploadStream.on('finish', resolve);
+            uploadStream.write(Buffer.from(buffer));
+            uploadStream.end();
+          });
 
-          if (!allowedTypes.includes(file.type)) {
-            return new Response(JSON.stringify({ error: `File type not allowed: ${file.type}` }), {
-              status: 400,
-              headers: { "Content-Type": "application/json" },
-            });
-          }
+          // The file ID is now available after the stream finishes
+          const fileId = uploadStream.id.toString();
 
-          const ext = extname(file.name) || ".bin";
-          const filename = `${randomUUID()}${ext}`;
-          const uploadsDir = join(process.cwd(), "public", "uploads");
-          await mkdir(uploadsDir, { recursive: true });
-
-          const buffer = Buffer.from(await file.arrayBuffer());
-          await writeFile(join(uploadsDir, filename), buffer);
-
-          return new Response(JSON.stringify({ url: `/uploads/${filename}` }), {
+          return new Response(JSON.stringify({ url: `/api/files/${fileId}` }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           });

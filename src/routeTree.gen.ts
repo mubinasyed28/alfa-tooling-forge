@@ -30,6 +30,7 @@ import { Route as AdminRfqsRouteImport } from './routes/admin.rfqs'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as CatalogCategoryProductRouteImport } from './routes/catalog.$category.$product'
+import { Route as ApiFilesIdRouteImport } from './routes/api.files.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -136,6 +137,11 @@ const CatalogCategoryProductRoute = CatalogCategoryProductRouteImport.update({
   path: '/$product',
   getParentRoute: () => CatalogCategoryRoute,
 } as any)
+const ApiFilesIdRoute = ApiFilesIdRouteImport.update({
+  id: '/api/files/$id',
+  path: '/api/files/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/catalog/': typeof CatalogIndexRoute
   '/resources/': typeof ResourcesIndexRoute
+  '/api/files/$id': typeof ApiFilesIdRoute
   '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRoutesByTo {
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/catalog': typeof CatalogIndexRoute
   '/resources': typeof ResourcesIndexRoute
+  '/api/files/$id': typeof ApiFilesIdRoute
   '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRoutesById {
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/catalog/': typeof CatalogIndexRoute
   '/resources/': typeof ResourcesIndexRoute
+  '/api/files/$id': typeof ApiFilesIdRoute
   '/catalog/$category/$product': typeof CatalogCategoryProductRoute
 }
 export interface FileRouteTypes {
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/catalog/'
     | '/resources/'
+    | '/api/files/$id'
     | '/catalog/$category/$product'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/catalog'
     | '/resources'
+    | '/api/files/$id'
     | '/catalog/$category/$product'
   id:
     | '__root__'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/catalog/'
     | '/resources/'
+    | '/api/files/$id'
     | '/catalog/$category/$product'
   fileRoutesById: FileRoutesById
 }
@@ -293,6 +305,7 @@ export interface RootRouteChildren {
   ResourcesSlugRoute: typeof ResourcesSlugRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
+  ApiFilesIdRoute: typeof ApiFilesIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -444,6 +457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogCategoryProductRouteImport
       parentRoute: typeof CatalogCategoryRoute
     }
+    '/api/files/$id': {
+      id: '/api/files/$id'
+      path: '/api/files/$id'
+      fullPath: '/api/files/$id'
+      preLoaderRoute: typeof ApiFilesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -493,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesSlugRoute: ResourcesSlugRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
+  ApiFilesIdRoute: ApiFilesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

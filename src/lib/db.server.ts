@@ -1,4 +1,4 @@
-import { MongoClient, Db, Document } from "mongodb";
+import { MongoClient, Db, Document, GridFSBucket } from "mongodb";
 
 // Server-only MongoDB singleton. Never imported from the browser.
 //
@@ -103,4 +103,11 @@ export async function getDb(): Promise<Db> {
 export async function getCollection<T extends Document = Document>(name: string) {
   const database = await getDb();
   return database.collection<T>(name);
+}
+
+export async function getBucket(name: string = "uploads") {
+  const database = await getDb();
+  // If we are in mock mode, this will fail gracefully or we could mock the bucket
+  // For now, assume a real DB is needed for file storage
+  return new GridFSBucket(database, { bucketName: name });
 }
