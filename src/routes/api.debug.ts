@@ -9,36 +9,28 @@ export const Route = createFileRoute("/api/debug")({
           timestamp: new Date().toISOString(),
           env: {
             has_uri: !!process.env.MONGODB_URI,
-            db_name: process.env.MONGODB_DB_NAME || "not set",
-            has_jwt: !!process.env.JWT_SECRET,
-            node_env: process.env.NODE_ENV,
+            db_name: process.env.MONGODB_DB_NAME || "alfatooling",
           }
         };
 
         try {
-          // Test the actual connection
           const db = await getDb();
+          const isMock = !!(db as any)[Symbol.for('isProxy')];
           
-          // Check if it's the Proxy (Mock) or real DB
-          const isProxy = (db as any)[Symbol.for('isProxy')] || db.constructor.name === 'Proxy';
-          results.database = {
-             type: isProxy ? "MOCK (Fallback)" : "REAL (Connected)",
-             client_type: db.constructor.name
-          };
-
-          if (!isProxy) {
-            const collections = await db.listCollections().toArray();
-            results.database.collections = collections.map(c => c.name);
-            
-            const userCount = await db.collection("users").countDocuments();
-            results.database.user_count = userCount;
-            
-            const admin = await db.collection("users").findOne({ role: "super_admin" });
-            results.database.has_super_admin = !!admin;
-            results.database.admin_email = admin?.email;
+          results.connection = isMock ? "MOCK (Failed to connect to Atlas)" : "REAL (Atlas Connected)";
+          
+          if (!isMock) {
+            const user = await db.collection("users").findOne({ role: "super_admin" });
+            results.auth_check = {
+              found_super_admin: !!user,
+              email_match: user?.email === process.env.SUPER_ADMIN_EMAIL
+            };
+          } else {
+             results.warning = "The app is falling back to the MOCK database because the Atlas connection failed.";
           }
         } catch (err: any) {
-          results.error = err.message;
+          results.connection_error = err.message;
+          results.stack = err.stack;
         }
 
         return new Response(JSON.stringify(results, null, 2), {
