@@ -11,6 +11,9 @@ export default defineConfig({
   nitro: {
     // Detect Vercel environment or fallback to cloudflare (the default)
     preset: process.env.VERCEL ? "vercel" : "cloudflare",
+    externals: {
+      inline: ["mongodb", "bson"],
+    },
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
