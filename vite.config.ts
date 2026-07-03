@@ -7,17 +7,6 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Force-enable nitro
-  nitro: {
-    // Detect Vercel environment or fallback to cloudflare (the default)
-    preset: process.env.VERCEL ? "vercel" : "cloudflare",
-    // Use type assertion to bypass strict wrapper types while keeping the Nitro fix
-    ...({
-      externals: {
-        inline: ["mongodb", "bson"],
-      },
-    } as any),
-  },
   vite: {
     ssr: {
       external: ["mongodb", "bson"],
