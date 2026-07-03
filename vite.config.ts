@@ -7,11 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  vite: {
-    ssr: {
-      external: ["mongodb", "bson"],
-      noExternal: [/@tanstack\/react-router/],
-    },
+  // Force nitro to use the vercel preset
+  nitro: {
+    preset: 'vercel',
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).

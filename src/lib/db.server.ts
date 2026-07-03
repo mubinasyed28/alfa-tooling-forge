@@ -1,3 +1,5 @@
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
 import { MongoClient, Db, Document, GridFSBucket } from "mongodb";
 
 // Server-only MongoDB singleton. Never imported from the browser.
