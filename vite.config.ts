@@ -18,6 +18,12 @@ export default defineConfig({
       },
     } as any),
   },
+  vite: {
+    ssr: {
+      external: ["mongodb", "bson"],
+      noExternal: [/@tanstack\/react-router/],
+    },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     server: { entry: "server" },
