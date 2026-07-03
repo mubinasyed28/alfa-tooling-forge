@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getDb } from "@/lib/db.server";
 
+// @ts-ignore
 export const Route = createFileRoute("/api/debug")({
   server: {
     handlers: {
@@ -19,14 +20,15 @@ export const Route = createFileRoute("/api/debug")({
           
           results.connection = isMock ? "MOCK (Failed to connect to Atlas)" : "REAL (Atlas Connected)";
           
-          if (!isMock) {
+          if (isMock) {
+             results.error_message = (globalThis as any).__mongoError || "Unknown connection error";
+             results.warning = "The app is falling back to the MOCK database because the Atlas connection failed.";
+          } else {
             const user = await db.collection("users").findOne({ role: "super_admin" });
             results.auth_check = {
               found_super_admin: !!user,
               email_match: user?.email === process.env.SUPER_ADMIN_EMAIL
             };
-          } else {
-             results.warning = "The app is falling back to the MOCK database because the Atlas connection failed.";
           }
         } catch (err: any) {
           results.connection_error = err.message;

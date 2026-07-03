@@ -14,6 +14,8 @@ declare global {
   // Ongoing connection attempt — prevents multiple parallel races on first load
   // eslint-disable-next-line no-var
   var __mongoConnecting: Promise<Db> | undefined;
+  // eslint-disable-next-line no-var
+  var __mongoError: string | null | undefined;
 }
 
 function buildMockDb(MOCK_DATA: Record<string, any[]>): Db {
@@ -85,8 +87,10 @@ export async function getDb(): Promise<Db> {
       await client.connect();
       globalThis.__mongoClient = client;
       globalThis.__mongoDb = client.db(process.env.MONGODB_DB_NAME ?? "alfatooling");
+      globalThis.__mongoError = null;
       console.log("MongoDB connected successfully.");
     } catch (error: any) {
+      globalThis.__mongoError = error.message;
       console.error("CRITICAL: MongoDB connection failed:", error.message);
       console.error("Full Error Details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
       console.warn("Using mock database — results will be in-memory only.");
